@@ -1,3 +1,5 @@
+#Ketzel Gibran Carrillo Ibarra 22310245
+
 import numpy as np
 
 # Base de películas (simples ejemplos)
