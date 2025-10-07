@@ -1,0 +1,136 @@
+{
+    "pregunta": "¿Tu película es de acción?",
+    "pelicula": null,
+    "si": {
+        "pregunta": "¿La película es de acción?",
+        "pelicula": null,
+        "si": {
+            "pregunta": "¿Hay superhéroes?",
+            "pelicula": null,
+            "si": {
+                "pregunta": "¿Tu pelicula tiene un perro con capa?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": null,
+                    "pelicula": "Superman",
+                    "si": null,
+                    "no": null
+                },
+                "no": {
+                    "pregunta": null,
+                    "pelicula": "Avengers: Endgame",
+                    "si": null,
+                    "no": null
+                }
+            },
+            "no": {
+                "pregunta": null,
+                "pelicula": "Rápidos y Furiosos 9",
+                "si": null,
+                "no": null
+            }
+        },
+        "no": null
+    },
+    "no": {
+        "pregunta": "¿Tu película es de comedia?",
+        "pelicula": null,
+        "si": {
+            "pregunta": "¿La película es de comedia?",
+            "pelicula": null,
+            "si": {
+                "pregunta": "¿Aparece Adam Sandler?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": null,
+                    "pelicula": "Son como niños",
+                    "si": null,
+                    "no": null
+                },
+                "no": {
+                    "pregunta": null,
+                    "pelicula": "Ted",
+                    "si": null,
+                    "no": null
+                }
+            },
+            "no": null
+        },
+        "no": {
+            "pregunta": "¿Tu película es de terror?",
+            "pelicula": null,
+            "si": {
+                "pregunta": "¿La película es de terror?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Involucra una casa embrujada?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "El Conjuro",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "It (Eso)",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": null
+            },
+            "no": {
+                "pregunta": "¿Tu película es romántica?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿La película es romántica?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": "¿Transcurre en un colegio?",
+                        "pelicula": null,
+                        "si": {
+                            "pregunta": null,
+                            "pelicula": "A todos los chicos de los que me enamoré",
+                            "si": null,
+                            "no": null
+                        },
+                        "no": {
+                            "pregunta": null,
+                            "pelicula": "Titanic",
+                            "si": null,
+                            "no": null
+                        }
+                    },
+                    "no": null
+                },
+                "no": {
+                    "pregunta": "¿Tu película es de ciencia ficción?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": "¿La película es de ciencia ficción?",
+                        "pelicula": null,
+                        "si": {
+                            "pregunta": "¿Hay viajes espaciales?",
+                            "pelicula": null,
+                            "si": {
+                                "pregunta": null,
+                                "pelicula": "Interestelar",
+                                "si": null,
+                                "no": null
+                            },
+                            "no": {
+                                "pregunta": null,
+                                "pelicula": "Matrix",
+                                "si": null,
+                                "no": null
+                            }
+                        },
+                        "no": null
+                    },
+                    "no": null
+                }
+            }
+        }
+    }
+}

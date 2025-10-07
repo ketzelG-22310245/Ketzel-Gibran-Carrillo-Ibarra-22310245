@@ -1,244 +1,167 @@
-"""
-Akinator de Películas (Prototipo)
-- Árbol dinámico de preguntas (sí/no/no sé)
-- Red neuronal ligera (MLPClassifier) que predice película según respuestas
-- Aprendizaje: si falla, el usuario suministra la película y el camino/respuestas se almacenan
-- Persistencia: db.json (películas, preguntas, partidas) + model.joblib para el clasificador
-"""
 
 import json
 import os
-from collections import defaultdict
-from typing import List, Dict, Any
-import joblib
-import numpy as np
 
-# ML libs
-from sklearn.neural_network import MLPClassifier
-from sklearn.preprocessing import LabelEncoder
+# Archivo donde se guardará el conocimiento del Akinator
+DB_FILE = "akinator.json"
 
-DB_FILE = "db.json"
-MODEL_FILE = "model.joblib"
+# -----------------------------
+# Clase del nodo del árbol
+# -----------------------------
+class Nodo:
+    def __init__(self, pregunta=None, si=None, no=None, pelicula=None):
+        self.pregunta = pregunta
+        self.si = si
+        self.no = no
+        self.pelicula = pelicula
 
-# --- Utilidades DB ---------------------------------------------------------
-def cargar_db() -> Dict[str, Any]:
-    if os.path.exists(DB_FILE):
-        with open(DB_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    # DB inicial si no existe
-    db = {
-        "preguntas": [
-            {"id": "genero_sf", "texto": "¿La película es de ciencia ficción?", "atributo": "genero", "valor": "Ciencia ficción"},
-            {"id": "es_accion", "texto": "¿La película es de acción?", "atributo": "genero", "valor": "Acción"},
-            {"id": "es_romance", "texto": "¿La película es de romance?", "atributo": "genero", "valor": "Romance"}
-        ],
-        "peliculas": [
-            # ejemplos iniciales opcionales
-            {"titulo": "Inception", "atributos": {"genero": "Ciencia ficción"}, "camino": []},
-            {"titulo": "Titanic", "atributos": {"genero": "Romance"}, "camino": []},
-            {"titulo": "Avengers: Endgame", "atributos": {"genero": "Acción"}, "camino": []}
-        ],
-        "partidas": []  # historial de partidas (camino de preguntas/respuestas)
-    }
-    guardar_db(db)
-    return db
+# -----------------------------
+# Funciones para guardar/cargar
+# -----------------------------
+def guardar_arbol(nodo):
+    """Guarda el árbol completo en un archivo JSON"""
+    def nodo_a_dict(n):
+        if n is None:
+            return None
+        return {
+            "pregunta": n.pregunta,
+            "pelicula": n.pelicula,
+            "si": nodo_a_dict(n.si),
+            "no": nodo_a_dict(n.no)
+        }
 
-def guardar_db(db: Dict[str, Any]):
     with open(DB_FILE, "w", encoding="utf-8") as f:
-        json.dump(db, f, indent=2, ensure_ascii=False)
+        json.dump(nodo_a_dict(nodo), f, ensure_ascii=False, indent=4)
 
-# --- Representación de características -------------------------------------
-def preguntas_ids_ordenadas(db):
-    # Mantener orden consistente de preguntas para vectores
-    return [p["id"] for p in db["preguntas"]]
 
-def respuestas_a_vector(respuestas: Dict[str, str], preguntas_ids: List[str]) -> List[float]:
-    # Mapear 'sí'->1, 'no'->0, 'no sé'->0.5 (valor intermedio)
-    vector = []
-    for pid in preguntas_ids:
-        r = respuestas.get(pid, None)
-        if r is None:
-            vector.append(0.5)  # indefinido -> neutro
+def cargar_arbol():
+    """Carga el árbol desde el archivo JSON o crea uno inicial"""
+    if not os.path.exists(DB_FILE):
+        return crear_arbol_inicial()
+
+    def dict_a_nodo(d):
+        if d is None:
+            return None
+        return Nodo(
+            pregunta=d["pregunta"],
+            pelicula=d["pelicula"],
+            si=dict_a_nodo(d["si"]),
+            no=dict_a_nodo(d["no"])
+        )
+
+    with open(DB_FILE, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    return dict_a_nodo(data)
+
+# -----------------------------
+# Árbol inicial con 5 géneros
+# -----------------------------
+def crear_arbol_inicial():
+    accion = Nodo("¿La película es de acción?",
+        si=Nodo("¿Hay superhéroes?",
+            si=Nodo(pelicula="Avengers: Endgame"),
+            no=Nodo(pelicula="Rápidos y Furiosos 9")
+        )
+    )
+    comedia = Nodo("¿La película es de comedia?",
+        si=Nodo("¿Aparece Adam Sandler?",
+            si=Nodo(pelicula="Son como niños"),
+            no=Nodo(pelicula="Ted")
+        )
+    )
+    terror = Nodo("¿La película es de terror?",
+        si=Nodo("¿Involucra una casa embrujada?",
+            si=Nodo(pelicula="El Conjuro"),
+            no=Nodo(pelicula="It (Eso)")
+        )
+    )
+    romance = Nodo("¿La película es romántica?",
+        si=Nodo("¿Transcurre en un colegio?",
+            si=Nodo(pelicula="A todos los chicos de los que me enamoré"),
+            no=Nodo(pelicula="Titanic")
+        )
+    )
+    ciencia_ficcion = Nodo("¿La película es de ciencia ficción?",
+        si=Nodo("¿Hay viajes espaciales?",
+            si=Nodo(pelicula="Interestelar"),
+            no=Nodo(pelicula="Matrix")
+        )
+    )
+
+    # El árbol principal pregunta por géneros en orden
+    raiz = Nodo("¿Tu película es de acción?",
+        si=accion,
+        no=Nodo("¿Tu película es de comedia?",
+            si=comedia,
+            no=Nodo("¿Tu película es de terror?",
+                si=terror,
+                no=Nodo("¿Tu película es romántica?",
+                    si=romance,
+                    no=Nodo("¿Tu película es de ciencia ficción?",
+                        si=ciencia_ficcion
+                    )
+                )
+            )
+        )
+    )
+    return raiz
+
+# -----------------------------
+# Lógica principal del Akinator
+# -----------------------------
+def hacer_pregunta(nodo):
+    """Realiza las preguntas recursivamente"""
+    if nodo.pelicula:
+        respuesta = input(f"¿Tu película es '{nodo.pelicula}'? (sí/no): ").strip().lower()
+        if respuesta in ["sí", "si"]:
+            print("🎬 ¡Adiviné la película!")
+            return nodo
         else:
-            if r.lower() in ("sí", "si", "s", "yes", "y"):
-                vector.append(1.0)
-            elif r.lower() in ("no", "n"):
-                vector.append(0.0)
-            else:
-                vector.append(0.5)
-    return vector
-
-# --- Entrenamiento y modelo -----------------------------------------------
-class ModelManager:
-    def __init__(self):
-        self.model = None
-        self.le = None  # label encoder for movie titles
-
-    def entrenar(self, db):
-        X = []
-        y = []
-        preguntas_ids = preguntas_ids_ordenadas(db)
-        # Usar partidas y también el campo 'camino' en peliculas
-        muestras = []
-        for partida in db.get("partidas", []):
-            muestras.append(partida)
-        for peli in db.get("peliculas", []):
-            if peli.get("camino"):
-                muestras.append({"titulo": peli["titulo"], "camino": peli["camino"]})
-        # Construir X,y
-        for m in muestras:
-            respuestas = {step["id"]: step["respuesta"] for step in m.get("camino", [])}
-            vec = respuestas_a_vector(respuestas, preguntas_ids)
-            X.append(vec)
-            y.append(m["titulo"])
-        if len(X) < 4:
-            # No hay suficientes muestras para entrenar un MLP confiable
-            self.model = None
-            self.le = None
-            return
-        X = np.array(X)
-        self.le = LabelEncoder()
-        y_enc = self.le.fit_transform(y)
-        clf = MLPClassifier(hidden_layer_sizes=(32,), max_iter=500, random_state=42)
-        clf.fit(X, y_enc)
-        self.model = clf
-        # Guardar a disco
-        joblib.dump({"model": self.model, "le": self.le}, MODEL_FILE)
-
-    def cargar(self):
-        if os.path.exists(MODEL_FILE):
-            data = joblib.load(MODEL_FILE)
-            self.model = data.get("model")
-            self.le = data.get("le")
-
-    def predecir(self, vector):
-        if self.model is None:
-            return None, None  # no entrenado
-        probs = self.model.predict_proba([vector])[0]
-        top_idx = np.argmax(probs)
-        titulo = self.le.inverse_transform([top_idx])[0]
-        confianza = float(probs[top_idx])
-        return titulo, confianza
-
-# --- Lógica de juego -------------------------------------------------------
-def preguntar_usuario(texto):
-    while True:
-        r = input(texto + " (sí/no/no sé): ").strip().lower()
-        if r in ("sí", "si", "s", "no", "n", "no sé", "nose", "ns", "no se"):
-            return r
-        print("Respuesta no válida. Escribe 'sí', 'no' o 'no sé'.")
-
-def jugar_una_partida(db, model_manager: ModelManager):
-    preguntas = db["preguntas"]
-    preguntas_ids = preguntas_ids_ordenadas(db)
-    candidatos = db["peliculas"][:]
-    camino = []  # lista de {id, texto, respuesta}
-    # Paso 1: Hacer preguntas secuenciales hasta reducir o hasta agotar preguntas
-    for p in preguntas:
-        # Si ya queda 1 candidato, podemos detener
-        if len(candidatos) <= 1:
-            break
-        r = preguntar_usuario(p["texto"])
-        camino.append({"id": p["id"], "texto": p["texto"], "respuesta": r})
-        # Filtrado por atributo si r == 'sí' o 'no'. Para 'no sé' no filtramos.
-        if r in ("sí", "si", "s"):
-            candidatos = [c for c in candidatos if c.get("atributos", {}).get(p["atributo"]) == p["valor"]]
-        elif r in ("no", "n"):
-            candidatos = [c for c in candidatos if c.get("atributos", {}).get(p["atributo"]) != p["valor"]]
-        # else no sé -> no filtramos
-    # Si tenemos modelo y suficientes preguntas/muestras, pedir predicción
-    vector_camino = respuestas_a_vector({step["id"]: step["respuesta"] for step in camino}, preguntas_ids)
-    suggestion = None
-    confianza = 0.0
-    if model_manager.model is not None:
-        suggestion, confianza = model_manager.predecir(vector_camino)
-    # Lógica para decidir adivinar
-    if suggestion and confianza >= 0.6:
-        print(f"Creo que tu película es: {suggestion} (confianza {confianza:.2f})")
-        real = preguntar_usuario("¿Es correcta mi suposición?")
-        if real in ("sí","si","s"):
-            print("¡Genial! 🎉")
-            # Registrar partida exitosa
-            db.setdefault("partidas", []).append({"titulo": suggestion, "camino": camino})
-            guardar_db(db)
-            return
-    # Si quedaron pocos candidatos, preguntar directamente
-    if len(candidatos) == 1:
-        print("Tu película es:", candidatos[0]["titulo"])
-        ok = preguntar_usuario("¿Es correcta?")
-        if ok in ("sí","si","s"):
-            db.setdefault("partidas", []).append({"titulo": candidatos[0]["titulo"], "camino": camino})
-            guardar_db(db)
-            return
-    # No adivinó: pedir ayuda al usuario
-    print("No adiviné tu película 😔")
-    titulo_real = input("¿Cuál era la película?: ").strip()
-    # Re-preguntar por todas las preguntas en orden para registrar el camino completo
-    print("Por favor confirma las respuestas a las preguntas para que pueda aprender (sí/no/no sé).")
-    camino_final = []
-    for p in preguntas:
-        r = preguntar_usuario(p["texto"])
-        camino_final.append({"id": p["id"], "texto": p["texto"], "respuesta": r})
-    # Guardar nueva película (si no existe)
-    existe = any(p["titulo"].lower() == titulo_real.lower() for p in db["peliculas"])
-    if not existe:
-        # intentar extraer atributos básicos a partir de respuestas (ejemplo simple)
-        atributos = {}
-        for step in camino_final:
-            # si la pregunta está vinculada a un atributo/valor en DB
-            pdef = next((q for q in preguntas if q["id"] == step["id"]), None)
-            if pdef and step["respuesta"] in ("sí","si","s"):
-                atributos[pdef["atributo"]] = pdef["valor"]
-        db["peliculas"].append({"titulo": titulo_real, "atributos": atributos, "camino": camino_final})
+            return aprender(nodo)
     else:
-        # Añadir camino a la pelicula existente
-        for p in db["peliculas"]:
-            if p["titulo"].lower() == titulo_real.lower():
-                p.setdefault("camino", []).append(camino_final)
-                break
-    # Guardar partida en historial
-    db.setdefault("partidas", []).append({"titulo": titulo_real, "camino": camino_final})
-    guardar_db(db)
-    # Re-entrenar modelo con la nueva muestra
-    model_manager.entrenar(db)
-    print("Gracias — he aprendido esta película. Ahora intentaré hacerlo mejor la próxima vez.")
-
-# --- Interfaz simple de consola --------------------------------------------
-def menu_principal():
-    print("Akinator Películas (Prototipo) — responde con 'sí', 'no' o 'no sé'")
-    db = cargar_db()
-    model_manager = ModelManager()
-    model_manager.cargar()
-    model_manager.entrenar(db)  # entrenar (o reentrenar) al inicio según DB
-    while True:
-        print("\nOpciones:")
-        print("1) Jugar una partida")
-        print("2) Mostrar estadísticas básicas")
-        print("3) Agregar pregunta manualmente")
-        print("4) Salir")
-        opc = input("Elige (1-4): ").strip()
-        if opc == "1":
-            jugar_una_partida(db, model_manager)
-        elif opc == "2":
-            n_pel = len(db.get("peliculas", []))
-            n_preg = len(db.get("preguntas", []))
-            n_part = len(db.get("partidas", []))
-            print(f"Películas en DB: {n_pel}, Preguntas: {n_preg}, Partidas registradas: {n_part}")
-        elif opc == "3":
-            texto = input("Texto de la pregunta (ej. '¿Es de terror?'): ").strip()
-            atributo = input("Atributo (ej. 'genero'): ").strip()
-            valor = input("Valor que representa el 'sí' (ej. 'Terror'): ").strip()
-            pid = atributo + "_" + valor.lower().replace(" ", "_")
-            db.setdefault("preguntas", []).append({"id": pid, "texto": texto, "atributo": atributo, "valor": valor})
-            guardar_db(db)
-            print("Pregunta añadida. Te recomiendo jugar una partida para generar ejemplos con la nueva pregunta.")
-            # después de añadir pregunta, reentrenar (las nuevas muestras no tendrán respuesta -> se usan como 0.5)
-            model_manager.entrenar(db)
-        elif opc == "4":
-            print("¡Hasta luego!")
-            break
+        respuesta = input(f"{nodo.pregunta} (sí/no): ").strip().lower()
+        if respuesta in ["sí", "si"]:
+            if nodo.si:
+                nodo.si = hacer_pregunta(nodo.si)
+            else:
+                nodo.si = aprender(Nodo())
         else:
-            print("Opción no válida.")
+            if nodo.no:
+                nodo.no = hacer_pregunta(nodo.no)
+            else:
+                nodo.no = aprender(Nodo())
+    return nodo
 
+# -----------------------------
+# Aprendizaje automático
+# -----------------------------
+def aprender(nodo):
+    pelicula_usuario = input("No la adiviné 😅 ¿Cuál era tu película?: ").strip()
+    nueva_pregunta = input(f"Dime una pregunta que distinga '{pelicula_usuario}' de '{nodo.pelicula}': ").strip()
+    respuesta_correcta = input(f"Para '{pelicula_usuario}', ¿la respuesta sería 'sí' o 'no'? ").strip().lower()
+
+    if respuesta_correcta in ["sí", "si"]:
+        nuevo_nodo = Nodo(pregunta=nueva_pregunta,
+                          si=Nodo(pelicula=pelicula_usuario),
+                          no=nodo)
+    else:
+        nuevo_nodo = Nodo(pregunta=nueva_pregunta,
+                          si=nodo,
+                          no=Nodo(pelicula=pelicula_usuario))
+
+    print("Gracias, he aprendido algo nuevo 🤖")
+    return nuevo_nodo
+
+# -----------------------------
+# Programa principal
+# -----------------------------
+def iniciar_akinator():
+    print("🎥 Bienvenido al Akinator de Películas con aprendizaje automático 🎬\n")
+    raiz = cargar_arbol()
+    raiz = hacer_pregunta(raiz)
+    guardar_arbol(raiz)
+    print("\nDatos guardados exitosamente en 'akinator.json' ✅")
+
+# Ejecutar
 if __name__ == "__main__":
-    menu_principal()
+    iniciar_akinator()

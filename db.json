@@ -1,0 +1,208 @@
+{
+  "preguntas": [
+    {
+      "id": "genero_sf",
+      "texto": "¿La película es de ciencia ficción?",
+      "atributo": "genero",
+      "valor": "Ciencia ficción"
+    },
+    {
+      "id": "es_accion",
+      "texto": "¿La película es de acción?",
+      "atributo": "genero",
+      "valor": "Acción"
+    },
+    {
+      "id": "es_romance",
+      "texto": "¿La película es de romance?",
+      "atributo": "genero",
+      "valor": "Romance"
+    },
+    {
+      "id": "superman_si",
+      "texto": "¿tu pelicula es de superheroes?",
+      "atributo": "superman",
+      "valor": "si"
+    }
+  ],
+  "peliculas": [
+    {
+      "titulo": "Inception",
+      "atributos": {
+        "genero": "Ciencia ficción"
+      },
+      "camino": []
+    },
+    {
+      "titulo": "Titanic",
+      "atributos": {
+        "genero": "Romance"
+      },
+      "camino": []
+    },
+    {
+      "titulo": "Avengers: Endgame",
+      "atributos": {
+        "genero": "Acción"
+      },
+      "camino": []
+    },
+    {
+      "titulo": "dune",
+      "atributos": {
+        "genero": "Acción"
+      },
+      "camino": [
+        {
+          "id": "genero_sf",
+          "texto": "¿La película es de ciencia ficción?",
+          "respuesta": "si"
+        },
+        {
+          "id": "es_accion",
+          "texto": "¿La película es de acción?",
+          "respuesta": "si"
+        },
+        {
+          "id": "es_romance",
+          "texto": "¿La película es de romance?",
+          "respuesta": "no"
+        }
+      ]
+    },
+    {
+      "titulo": "superman",
+      "atributos": {
+        "genero": "Acción"
+      },
+      "camino": [
+        {
+          "id": "genero_sf",
+          "texto": "¿La película es de ciencia ficción?",
+          "respuesta": "no"
+        },
+        {
+          "id": "es_accion",
+          "texto": "¿La película es de acción?",
+          "respuesta": "si"
+        },
+        {
+          "id": "es_romance",
+          "texto": "¿La película es de romance?",
+          "respuesta": "no"
+        },
+        [
+          {
+            "id": "genero_sf",
+            "texto": "¿La película es de ciencia ficción?",
+            "respuesta": "no"
+          },
+          {
+            "id": "es_accion",
+            "texto": "¿La película es de acción?",
+            "respuesta": "si"
+          },
+          {
+            "id": "es_romance",
+            "texto": "¿La película es de romance?",
+            "respuesta": "no"
+          },
+          {
+            "id": "superman_si",
+            "texto": "¿tu pelicula es de superheroes?",
+            "respuesta": "si"
+          }
+        ]
+      ]
+    }
+  ],
+  "partidas": [
+    {
+      "titulo": "dune",
+      "camino": [
+        {
+          "id": "genero_sf",
+          "texto": "¿La película es de ciencia ficción?",
+          "respuesta": "si"
+        },
+        {
+          "id": "es_accion",
+          "texto": "¿La película es de acción?",
+          "respuesta": "si"
+        },
+        {
+          "id": "es_romance",
+          "texto": "¿La película es de romance?",
+          "respuesta": "no"
+        }
+      ]
+    },
+    {
+      "titulo": "superman",
+      "camino": [
+        {
+          "id": "genero_sf",
+          "texto": "¿La película es de ciencia ficción?",
+          "respuesta": "no"
+        },
+        {
+          "id": "es_accion",
+          "texto": "¿La película es de acción?",
+          "respuesta": "si"
+        },
+        {
+          "id": "es_romance",
+          "texto": "¿La película es de romance?",
+          "respuesta": "no"
+        },
+        [
+          {
+            "id": "genero_sf",
+            "texto": "¿La película es de ciencia ficción?",
+            "respuesta": "no"
+          },
+          {
+            "id": "es_accion",
+            "texto": "¿La película es de acción?",
+            "respuesta": "si"
+          },
+          {
+            "id": "es_romance",
+            "texto": "¿La película es de romance?",
+            "respuesta": "no"
+          },
+          {
+            "id": "superman_si",
+            "texto": "¿tu pelicula es de superheroes?",
+            "respuesta": "si"
+          }
+        ]
+      ]
+    },
+    {
+      "titulo": "superman",
+      "camino": [
+        {
+          "id": "genero_sf",
+          "texto": "¿La película es de ciencia ficción?",
+          "respuesta": "no"
+        },
+        {
+          "id": "es_accion",
+          "texto": "¿La película es de acción?",
+          "respuesta": "si"
+        },
+        {
+          "id": "es_romance",
+          "texto": "¿La película es de romance?",
+          "respuesta": "no"
+        },
+        {
+          "id": "superman_si",
+          "texto": "¿tu pelicula es de superheroes?",
+          "respuesta": "si"
+        }
+      ]
+    }
+  ]
+}
