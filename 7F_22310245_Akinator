@@ -1,13 +1,69 @@
 
 import json
 import os
+import csv
+import joblib
+from collections import defaultdict
 
-# Archivo donde se guardará el conocimiento del Akinator
+# Intento de importar sklearn y auxiliares; si falla, avisar al usuario
+try:
+    from sklearn.neural_network import MLPClassifier
+    from sklearn.preprocessing import LabelEncoder
+    from sklearn.exceptions import ConvergenceWarning
+    import warnings
+    warnings.filterwarnings("ignore", category=ConvergenceWarning)
+except Exception as e:
+    raise ImportError(
+        "Falta scikit-learn o joblib. Instálalos con:\n\n"
+        "    pip install scikit-learn joblib\n\n"
+        "Luego vuelve a ejecutar el script.\n\n"
+        f"Error original: {e}"
+    )
+
 DB_FILE = "akinator.json"
+DATASET_FILE = "dataset.csv"
+MODEL_FILE = "model.joblib"
 
-# -----------------------------
-# Clase del nodo del árbol
-# -----------------------------
+GENRES = ["acción", "comedia", "terror", "romance", "ciencia ficción"]
+
+# Preguntas fijas (4 por género) -> usadas como features por el MLP
+# Nota: estas preguntas también se usan para inicializar el árbol.
+GENRE_QUESTIONS = {
+    "acción": [
+        "¿Hay superhéroes?",
+        "¿Hay persecuciones de autos?",
+        "¿El protagonista es parte de una franquicia conocida?",
+        "¿Hay grandes escenas de lucha?"
+    ],
+    "comedia": [
+        "¿El humor es físico (slapstick)?",
+        "¿El protagonista es un comediante famoso?",
+        "¿La historia es sobre una familia disfuncional?",
+        "¿Tiene humor negro?"
+    ],
+    "terror": [
+        "¿Involucra una casa embrujada?",
+        "¿Hay entidades sobrenaturales?",
+        "¿Incluye jump scares frecuentes?",
+        "¿El antagonista es una criatura/monstruo?"
+    ],
+    "romance": [
+        "¿La historia se centra en una pareja?",
+        "¿Transcurre en un colegio/universidad?",
+        "¿Es un drama romántico (triste)?",
+        "¿Hay un triángulo amoroso?"
+    ],
+    "ciencia ficción": [
+        "¿Hay viajes espaciales?",
+        "¿Incluye IA o robots?",
+        "¿La historia trata sobre un futuro distópico?",
+        "¿Hay viajes en el tiempo?"
+    ],
+}
+
+# -------------------------
+# Nodo y serialización
+# -------------------------
 class Nodo:
     def __init__(self, pregunta=None, si=None, no=None, pelicula=None):
         self.pregunta = pregunta
@@ -15,132 +71,295 @@ class Nodo:
         self.no = no
         self.pelicula = pelicula
 
-# -----------------------------
-# Funciones para guardar/cargar
-# -----------------------------
-def guardar_arbol(nodo):
-    """Guarda el árbol completo en un archivo JSON"""
-    def nodo_a_dict(n):
-        if n is None:
-            return None
-        return {
-            "pregunta": n.pregunta,
-            "pelicula": n.pelicula,
-            "si": nodo_a_dict(n.si),
-            "no": nodo_a_dict(n.no)
-        }
+def nodo_a_dict(n):
+    if n is None:
+        return None
+    return {
+        "pregunta": n.pregunta,
+        "pelicula": n.pelicula,
+        "si": nodo_a_dict(n.si),
+        "no": nodo_a_dict(n.no)
+    }
 
+def dict_a_nodo(d):
+    if d is None:
+        return None
+    return Nodo(
+        pregunta=d.get("pregunta"),
+        pelicula=d.get("pelicula"),
+        si=dict_a_nodo(d.get("si")),
+        no=dict_a_nodo(d.get("no"))
+    )
+
+# -------------------------
+# Guardado / Carga árbol
+# -------------------------
+def guardar_arbol(generos):
+    data = {nombre: nodo_a_dict(nodo) for nombre, nodo in generos.items()}
     with open(DB_FILE, "w", encoding="utf-8") as f:
-        json.dump(nodo_a_dict(nodo), f, ensure_ascii=False, indent=4)
-
+        json.dump(data, f, ensure_ascii=False, indent=4)
 
 def cargar_arbol():
-    """Carga el árbol desde el archivo JSON o crea uno inicial"""
     if not os.path.exists(DB_FILE):
         return crear_arbol_inicial()
-
-    def dict_a_nodo(d):
-        if d is None:
-            return None
-        return Nodo(
-            pregunta=d["pregunta"],
-            pelicula=d["pelicula"],
-            si=dict_a_nodo(d["si"]),
-            no=dict_a_nodo(d["no"])
-        )
-
     with open(DB_FILE, "r", encoding="utf-8") as f:
         data = json.load(f)
-    return dict_a_nodo(data)
+    return {nombre: dict_a_nodo(nodo_dict) for nombre, nodo_dict in data.items()}
 
-# -----------------------------
-# Árbol inicial con 5 géneros
-# -----------------------------
+# -------------------------
+# Árbol inicial expandido
+# -------------------------
 def crear_arbol_inicial():
-    accion = Nodo("¿La película es de acción?",
-        si=Nodo("¿Hay superhéroes?",
-            si=Nodo(pelicula="Avengers: Endgame"),
-            no=Nodo(pelicula="Rápidos y Furiosos 9")
-        )
-    )
-    comedia = Nodo("¿La película es de comedia?",
-        si=Nodo("¿Aparece Adam Sandler?",
-            si=Nodo(pelicula="Son como niños"),
-            no=Nodo(pelicula="Ted")
-        )
-    )
-    terror = Nodo("¿La película es de terror?",
-        si=Nodo("¿Involucra una casa embrujada?",
-            si=Nodo(pelicula="El Conjuro"),
-            no=Nodo(pelicula="It (Eso)")
-        )
-    )
-    romance = Nodo("¿La película es romántica?",
-        si=Nodo("¿Transcurre en un colegio?",
-            si=Nodo(pelicula="A todos los chicos de los que me enamoré"),
-            no=Nodo(pelicula="Titanic")
-        )
-    )
-    ciencia_ficcion = Nodo("¿La película es de ciencia ficción?",
-        si=Nodo("¿Hay viajes espaciales?",
-            si=Nodo(pelicula="Interestelar"),
-            no=Nodo(pelicula="Matrix")
-        )
-    )
+    # Por simplicidad, construiremos un árbol que pregunta las 4 preguntas
+    # secuencialmente para cada género y termina en dos posibles películas.
+    # Puedes editar/expandir las hojas iniciales.
+    generos = {}
 
-    # El árbol principal pregunta por géneros en orden
-    raiz = Nodo("¿Tu película es de acción?",
-        si=accion,
-        no=Nodo("¿Tu película es de comedia?",
-            si=comedia,
-            no=Nodo("¿Tu película es de terror?",
-                si=terror,
-                no=Nodo("¿Tu película es romántica?",
-                    si=romance,
-                    no=Nodo("¿Tu película es de ciencia ficción?",
-                        si=ciencia_ficcion
-                    )
-                )
-            )
-        )
-    )
-    return raiz
+    # Ejemplos de películas por género (hojas iniciales)
+    ejemplos = {
+        "acción": ("Avengers: Endgame", "John Wick"),
+        "comedia": ("Son como niños", "Ted"),
+        "terror": ("El Conjuro", "It (Eso)"),
+        "romance": ("A todos los chicos de los que me enamoré", "Titanic"),
+        "ciencia ficción": ("Interestelar", "Matrix")
+    }
 
-# -----------------------------
-# Lógica principal del Akinator
-# -----------------------------
-def hacer_pregunta(nodo):
-    """Realiza las preguntas recursivamente"""
+    for genero in GENRES:
+        qlist = GENRE_QUESTIONS[genero]
+
+        # Construir un camino lineal de 4 preguntas que conduce a dos películas
+        # Pregunta1 -> Pregunta2 -> Pregunta3 -> Pregunta4 -> [peliculaA/no->peliculaB]
+        leaf_yes = Nodo(pelicula=ejemplos[genero][0])
+        leaf_no = Nodo(pelicula=ejemplos[genero][1])
+        node = Nodo(pregunta=qlist[-1], si=leaf_yes, no=leaf_no)
+
+        # Construir las 3 preguntas superiores
+        for q in reversed(qlist[:-1]):
+            node = Nodo(pregunta=q, si=node, no=node)  # por defecto, ambos apuntan igual (se puede mejorar)
+        generos[genero] = node
+
+    return generos
+
+# -------------------------
+# Dataset (CSV) manejo
+# -------------------------
+def asegurar_dataset():
+    if not os.path.exists(DATASET_FILE):
+        # Crear cabecera: 20 features + objetivo
+        header = []
+        for g in GENRES:
+            for i in range(1, 5):
+                header.append(f"{g}_q{i}")
+        header.append("pelicula")
+        with open(DATASET_FILE, "w", encoding="utf-8", newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(header)
+
+def agregar_ejemplo_a_dataset(feature_vector, pelicula):
+    """
+    feature_vector: lista de 20 valores (0/1) coincidiendo con el orden de GENRES x 4 preguntas.
+    """
+    asegurar_dataset()
+    row = list(feature_vector) + [pelicula]
+    with open(DATASET_FILE, "a", encoding="utf-8", newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(row)
+
+def cargar_dataset():
+    asegurar_dataset()
+    X = []
+    y = []
+    with open(DATASET_FILE, "r", encoding="utf-8") as f:
+        reader = csv.reader(f)
+        header = next(reader, None)
+        for row in reader:
+            if len(row) < 21:
+                continue
+            features = [int(x) for x in row[:-1]]
+            label = row[-1]
+            X.append(features)
+            y.append(label)
+    return X, y
+
+# -------------------------
+# Modelo (MLP) manejo
+# -------------------------
+def train_model():
+    X, y = cargar_dataset()
+    if len(X) < 1:
+        # No hay datos suficientes
+        return None
+
+    le = LabelEncoder()
+    y_enc = le.fit_transform(y)
+    model = MLPClassifier(hidden_layer_sizes=(50, ), max_iter=500)
+    model.fit(X, y_enc)
+    # Guardar modelo y label encoder
+    joblib.dump({"model": model, "le": le}, MODEL_FILE)
+    return model, le
+
+def cargar_modelo():
+    if not os.path.exists(MODEL_FILE):
+        return None, None
+    data = joblib.load(MODEL_FILE)
+    return data.get("model"), data.get("le")
+
+# -------------------------
+# Utilidades de I/O validadas
+# -------------------------
+def pedir_si_no(prompt):
+    while True:
+        r = input(prompt + " (sí/no): ").strip().lower()
+        if r in ["sí", "si", "s", "yes", "y"]:
+            return 1
+        if r in ["no", "n"]:
+            return 0
+        print("Respuesta no válida. Responde 'sí' o 'no'.")
+
+# -------------------------
+# Flujo de juego
+# -------------------------
+def obtener_vector_features(respuestas_por_genero):
+    """
+    Construye el vector de 20 features a partir de un diccionario:
+      { 'acción': [1,0,1,0], 'comedia': [0,0,0,0], ... }
+    El orden es GENRES en el orden definido y dentro de cada género q1..q4.
+    """
+    vector = []
+    for g in GENRES:
+        vals = respuestas_por_genero.get(g, [0,0,0,0])
+        # Si faltan preguntas, rellenar con 0
+        vals = vals + [0]*(4 - len(vals))
+        vector.extend([int(bool(x)) for x in vals[:4]])
+    return vector
+
+def jugar_una_partida(generos, modelo, le):
+    print("\nResponde las preguntas del género correspondiente para que el MLP pueda intentar predecir.")
+    # Preguntar género (una sola vez)
+    print("Primero dime el género de tu película:")
+    elegido = None
+    for g in GENRES:
+        r = pedir_si_no(f"¿Tu película es de {g}?")
+        if r == 1:
+            elegido = g
+            break
+    if not elegido:
+        print("No supiste escoger un género. Fin de partida.")
+        return modelo, le
+
+    # Hacer las 4 preguntas fijas de ese género y recopilar respuestas
+    respuestas = {}
+    for g in GENRES:
+        respuestas[g] = [0,0,0,0]  # default
+    resp_list = []
+    for i, q in enumerate(GENRE_QUESTIONS[elegido]):
+        ans = pedir_si_no(q)
+        respuestas[elegido][i] = ans
+        resp_list.append(ans)
+
+    # Construir vector completo para el MLP
+    feat = obtener_vector_features(respuestas)
+
+    # Intento de predicción por MLP (si modelo existe)
+    if modelo is not None and le is not None:
+        try:
+            probs = modelo.predict_proba([feat])[0]
+            idx = probs.argmax()
+            conf = probs[idx]
+            pred_label = le.inverse_transform([idx])[0]
+            # Umbral de confianza para proponer la predicción
+            umbral = 0.60
+            if conf >= umbral:
+                print(f"\nEl modelo sugiere que tu película es: '{pred_label}' (confianza {conf:.2f}).")
+                confirmado = pedir_si_no("¿Es correcta la predicción?")
+                if confirmado == 1:
+                    print("🎉 ¡Perfecto! El MLP acertó.")
+                    return modelo, le
+                else:
+                    print("Ok, no acertó. Seguiremos con el árbol y aprenderemos.")
+            else:
+                print(f"\nEl modelo intenta predecir, pero no está seguro (confianza {conf:.2f}). Usaré el árbol.")
+        except Exception as e:
+            print(f"Error durante la predicción del MLP: {e}. Continuo con el árbol.")
+
+    # Si el MLP no acertó o no existe, recorrer el árbol del género seleccionado
+    nuevo_subarbol = hacer_pregunta_en_genero(generos[elegido])
+    generos[elegido] = nuevo_subarbol
+    guardar_arbol(generos)
+
+    # Si el usuario enseñó una nueva película (aprender), deberíamos tener la película final
+    # Para registrar un ejemplo en el dataset necesitamos la película elegida.
+    # Pedimos confirmación: ¿se adivinó? si no, pedir el nombre (el aprender() ya pedirá y actualizará árbol).
+    # Para capturar el ejemplo, retornamos la película preguntando en el final del flujo:
+    pelicula_final = preguntar_pelicula_resultado(generos[elegido])
+    if pelicula_final:
+        feature_vector = feat  # vector calculado arriba
+        agregar_ejemplo_a_dataset(feature_vector, pelicula_final)
+        # Reentrenar el modelo en vivo
+        modelo_le_tuple = train_model()
+        if modelo_le_tuple:
+            modelo, le = modelo_le_tuple
+            print("Modelo MLP reentrenado en vivo con el nuevo ejemplo ✅")
+    return modelo, le
+
+def hacer_pregunta_en_genero(nodo):
+    """Función recursiva parecida a la versión arbol, pero sin volver a preguntar género."""
+    if nodo is None:
+        return aprender(Nodo())
+
     if nodo.pelicula:
-        respuesta = input(f"¿Tu película es '{nodo.pelicula}'? (sí/no): ").strip().lower()
-        if respuesta in ["sí", "si"]:
+        r = input(f"¿Tu película es '{nodo.pelicula}'? (sí/no): ").strip().lower()
+        if r in ["sí", "si", "s"]:
             print("🎬 ¡Adiviné la película!")
             return nodo
         else:
             return aprender(nodo)
-    else:
-        respuesta = input(f"{nodo.pregunta} (sí/no): ").strip().lower()
-        if respuesta in ["sí", "si"]:
-            if nodo.si:
-                nodo.si = hacer_pregunta(nodo.si)
-            else:
-                nodo.si = aprender(Nodo())
+
+    r = input(f"{nodo.pregunta} (sí/no): ").strip().lower()
+    if r in ["sí", "si", "s"]:
+        if nodo.si:
+            nodo.si = hacer_pregunta_en_genero(nodo.si)
         else:
-            if nodo.no:
-                nodo.no = hacer_pregunta(nodo.no)
-            else:
-                nodo.no = aprender(Nodo())
+            nodo.si = aprender(Nodo())
+    else:
+        if nodo.no:
+            nodo.no = hacer_pregunta_en_genero(nodo.no)
+        else:
+            nodo.no = aprender(Nodo())
     return nodo
 
-# -----------------------------
-# Aprendizaje automático
-# -----------------------------
+def preguntar_pelicula_resultado(subarbol):
+    """
+    Intenta deducir la película final del subárbol: si la raíz es película, retorno esa.
+    Si no, intenta preguntar al usuario directamente el nombre (para garantizar dataset).
+    """
+    # Si la raíz es hoja con pelicula, retornarla (no se necesita preguntar)
+    if subarbol and subarbol.pelicula:
+        return subarbol.pelicula
+    # Si no, pedir al usuario el nombre final para poder registrar ejemplo
+    r = input("Para ayudarnos a aprender: ¿Cuál era la película correcta? (escribe el título): ").strip()
+    if r:
+        return r
+    return None
+
+# -------------------------
+# Aprendizaje dinámico (árbol)
+# -------------------------
 def aprender(nodo):
     pelicula_usuario = input("No la adiviné 😅 ¿Cuál era tu película?: ").strip()
-    nueva_pregunta = input(f"Dime una pregunta que distinga '{pelicula_usuario}' de '{nodo.pelicula}': ").strip()
-    respuesta_correcta = input(f"Para '{pelicula_usuario}', ¿la respuesta sería 'sí' o 'no'? ").strip().lower()
+    comparacion = nodo.pelicula if nodo.pelicula else "la que intenté adivinar"
+    nueva_pregunta = input(f"Dime una pregunta que distinga '{pelicula_usuario}' de {comparacion}: ").strip()
+    respuesta_correcta = None
+    while respuesta_correcta is None:
+        rc = input(f"Para '{pelicula_usuario}', ¿la respuesta sería 'sí' o 'no'? ").strip().lower()
+        if rc in ["sí", "si", "s"]:
+            respuesta_correcta = True
+        elif rc in ["no", "n"]:
+            respuesta_correcta = False
+        else:
+            print("Respuesta no válida. Responde 'sí' o 'no'.")
 
-    if respuesta_correcta in ["sí", "si"]:
+    if respuesta_correcta:
         nuevo_nodo = Nodo(pregunta=nueva_pregunta,
                           si=Nodo(pelicula=pelicula_usuario),
                           no=nodo)
@@ -152,16 +371,31 @@ def aprender(nodo):
     print("Gracias, he aprendido algo nuevo 🤖")
     return nuevo_nodo
 
-# -----------------------------
+# -------------------------
 # Programa principal
-# -----------------------------
+# -------------------------
 def iniciar_akinator():
-    print("🎥 Bienvenido al Akinator de Películas con aprendizaje automático 🎬\n")
-    raiz = cargar_arbol()
-    raiz = hacer_pregunta(raiz)
-    guardar_arbol(raiz)
-    print("\nDatos guardados exitosamente en 'akinator.json' ✅")
+    print("🎥 Akinator de Películas — Parte 3 (MLP en vivo) 🎬")
+    generos = cargar_arbol()
+    asegurar_dataset()
 
-# Ejecutar
+    # Intentar cargar modelo entrenado
+    modelo, le = cargar_modelo()
+    if modelo is None:
+        print("No hay modelo MLP previo. Se entrenará si hay ejemplos en dataset.")
+        # Intentar entrenar si hay datos
+        modelo_le_tuple = train_model()
+        if modelo_le_tuple:
+            modelo, le = modelo_le_tuple
+
+    while True:
+        modelo, le = jugar_una_partida(generos, modelo, le)
+        # Preguntar si quiere jugar de nuevo
+        cont = input("\n¿Quieres jugar otra partida? (sí/no): ").strip().lower()
+        if cont not in ["sí", "si", "s"]:
+            print("¡Hasta la próxima! Guardando datos...")
+            guardar_arbol(generos)
+            break
+
 if __name__ == "__main__":
     iniciar_akinator()

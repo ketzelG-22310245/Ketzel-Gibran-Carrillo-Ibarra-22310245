@@ -1,0 +1,862 @@
+{
+    "acción": {
+        "pregunta": "¿Hay superhéroes?",
+        "pelicula": null,
+        "si": {
+            "pregunta": "¿Hay persecuciones de autos?",
+            "pelicula": null,
+            "si": {
+                "pregunta": "¿El protagonista es parte de una franquicia conocida?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Hay grandes escenas de lucha?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": "¿Tu superheroe se disfraza de murcielago?",
+                        "pelicula": null,
+                        "si": {
+                            "pregunta": null,
+                            "pelicula": "The batman",
+                            "si": null,
+                            "no": null
+                        },
+                        "no": {
+                            "pregunta": null,
+                            "pelicula": "Avengers: Endgame",
+                            "si": null,
+                            "no": null
+                        }
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "John Wick",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Hay grandes escenas de lucha?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": "¿Tu superheroe se disfraza de murcielago?",
+                        "pelicula": null,
+                        "si": {
+                            "pregunta": null,
+                            "pelicula": "The batman",
+                            "si": null,
+                            "no": null
+                        },
+                        "no": {
+                            "pregunta": null,
+                            "pelicula": "Avengers: Endgame",
+                            "si": null,
+                            "no": null
+                        }
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "John Wick",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            },
+            "no": {
+                "pregunta": "¿El protagonista es parte de una franquicia conocida?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Hay grandes escenas de lucha?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": "¿Tu superheroe se disfraza de murcielago?",
+                        "pelicula": null,
+                        "si": {
+                            "pregunta": null,
+                            "pelicula": "The batman",
+                            "si": null,
+                            "no": null
+                        },
+                        "no": {
+                            "pregunta": null,
+                            "pelicula": "Avengers: Endgame",
+                            "si": null,
+                            "no": null
+                        }
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "John Wick",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Hay grandes escenas de lucha?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": "¿Tu superheroe se disfraza de murcielago?",
+                        "pelicula": null,
+                        "si": {
+                            "pregunta": null,
+                            "pelicula": "The batman",
+                            "si": null,
+                            "no": null
+                        },
+                        "no": {
+                            "pregunta": null,
+                            "pelicula": "Avengers: Endgame",
+                            "si": null,
+                            "no": null
+                        }
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "John Wick",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            }
+        },
+        "no": {
+            "pregunta": "¿Hay persecuciones de autos?",
+            "pelicula": null,
+            "si": {
+                "pregunta": "¿El protagonista es parte de una franquicia conocida?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Hay grandes escenas de lucha?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": "¿Tu superheroe se disfraza de murcielago?",
+                        "pelicula": null,
+                        "si": {
+                            "pregunta": null,
+                            "pelicula": "The batman",
+                            "si": null,
+                            "no": null
+                        },
+                        "no": {
+                            "pregunta": null,
+                            "pelicula": "Avengers: Endgame",
+                            "si": null,
+                            "no": null
+                        }
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "John Wick",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Hay grandes escenas de lucha?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": "¿Tu superheroe se disfraza de murcielago?",
+                        "pelicula": null,
+                        "si": {
+                            "pregunta": null,
+                            "pelicula": "The batman",
+                            "si": null,
+                            "no": null
+                        },
+                        "no": {
+                            "pregunta": null,
+                            "pelicula": "Avengers: Endgame",
+                            "si": null,
+                            "no": null
+                        }
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "John Wick",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            },
+            "no": {
+                "pregunta": "¿El protagonista es parte de una franquicia conocida?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Hay grandes escenas de lucha?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": "¿Tu superheroe se disfraza de murcielago?",
+                        "pelicula": null,
+                        "si": {
+                            "pregunta": null,
+                            "pelicula": "The batman",
+                            "si": null,
+                            "no": null
+                        },
+                        "no": {
+                            "pregunta": null,
+                            "pelicula": "Avengers: Endgame",
+                            "si": null,
+                            "no": null
+                        }
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "John Wick",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Hay grandes escenas de lucha?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": "¿Tu superheroe se disfraza de murcielago?",
+                        "pelicula": null,
+                        "si": {
+                            "pregunta": null,
+                            "pelicula": "The batman",
+                            "si": null,
+                            "no": null
+                        },
+                        "no": {
+                            "pregunta": null,
+                            "pelicula": "Avengers: Endgame",
+                            "si": null,
+                            "no": null
+                        }
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "John Wick",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            }
+        }
+    },
+    "comedia": {
+        "pregunta": "¿El humor es físico (slapstick)?",
+        "pelicula": null,
+        "si": {
+            "pregunta": "¿El protagonista es un comediante famoso?",
+            "pelicula": null,
+            "si": {
+                "pregunta": "¿La historia es sobre una familia disfuncional?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Tiene humor negro?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Son como niños",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Ted",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Tiene humor negro?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Son como niños",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Ted",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            },
+            "no": {
+                "pregunta": "¿La historia es sobre una familia disfuncional?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Tiene humor negro?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Son como niños",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Ted",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Tiene humor negro?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Son como niños",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Ted",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            }
+        },
+        "no": {
+            "pregunta": "¿El protagonista es un comediante famoso?",
+            "pelicula": null,
+            "si": {
+                "pregunta": "¿La historia es sobre una familia disfuncional?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Tiene humor negro?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Son como niños",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Ted",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Tiene humor negro?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Son como niños",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Ted",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            },
+            "no": {
+                "pregunta": "¿La historia es sobre una familia disfuncional?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Tiene humor negro?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Son como niños",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Ted",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Tiene humor negro?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Son como niños",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Ted",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            }
+        }
+    },
+    "terror": {
+        "pregunta": "¿Involucra una casa embrujada?",
+        "pelicula": null,
+        "si": {
+            "pregunta": "¿Hay entidades sobrenaturales?",
+            "pelicula": null,
+            "si": {
+                "pregunta": "¿Incluye jump scares frecuentes?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿El antagonista es una criatura/monstruo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "El Conjuro",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "It (Eso)",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿El antagonista es una criatura/monstruo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "El Conjuro",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "It (Eso)",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            },
+            "no": {
+                "pregunta": "¿Incluye jump scares frecuentes?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿El antagonista es una criatura/monstruo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "El Conjuro",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "It (Eso)",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿El antagonista es una criatura/monstruo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "El Conjuro",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "It (Eso)",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            }
+        },
+        "no": {
+            "pregunta": "¿Hay entidades sobrenaturales?",
+            "pelicula": null,
+            "si": {
+                "pregunta": "¿Incluye jump scares frecuentes?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿El antagonista es una criatura/monstruo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "El Conjuro",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "It (Eso)",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿El antagonista es una criatura/monstruo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "El Conjuro",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "It (Eso)",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            },
+            "no": {
+                "pregunta": "¿Incluye jump scares frecuentes?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿El antagonista es una criatura/monstruo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "El Conjuro",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "It (Eso)",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿El antagonista es una criatura/monstruo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "El Conjuro",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "It (Eso)",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            }
+        }
+    },
+    "romance": {
+        "pregunta": "¿La historia se centra en una pareja?",
+        "pelicula": null,
+        "si": {
+            "pregunta": "¿Transcurre en un colegio/universidad?",
+            "pelicula": null,
+            "si": {
+                "pregunta": "¿Es un drama romántico (triste)?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Hay un triángulo amoroso?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "A todos los chicos de los que me enamoré",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Titanic",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Hay un triángulo amoroso?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "A todos los chicos de los que me enamoré",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Titanic",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            },
+            "no": {
+                "pregunta": "¿Es un drama romántico (triste)?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Hay un triángulo amoroso?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "A todos los chicos de los que me enamoré",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Titanic",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Hay un triángulo amoroso?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "A todos los chicos de los que me enamoré",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Titanic",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            }
+        },
+        "no": {
+            "pregunta": "¿Transcurre en un colegio/universidad?",
+            "pelicula": null,
+            "si": {
+                "pregunta": "¿Es un drama romántico (triste)?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Hay un triángulo amoroso?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "A todos los chicos de los que me enamoré",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Titanic",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Hay un triángulo amoroso?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "A todos los chicos de los que me enamoré",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Titanic",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            },
+            "no": {
+                "pregunta": "¿Es un drama romántico (triste)?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Hay un triángulo amoroso?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "A todos los chicos de los que me enamoré",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Titanic",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Hay un triángulo amoroso?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "A todos los chicos de los que me enamoré",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Titanic",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            }
+        }
+    },
+    "ciencia ficción": {
+        "pregunta": "¿Hay viajes espaciales?",
+        "pelicula": null,
+        "si": {
+            "pregunta": "¿Incluye IA o robots?",
+            "pelicula": null,
+            "si": {
+                "pregunta": "¿La historia trata sobre un futuro distópico?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Hay viajes en el tiempo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Interestelar",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Matrix",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Hay viajes en el tiempo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Interestelar",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Matrix",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            },
+            "no": {
+                "pregunta": "¿La historia trata sobre un futuro distópico?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Hay viajes en el tiempo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Interestelar",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Matrix",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Hay viajes en el tiempo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Interestelar",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Matrix",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            }
+        },
+        "no": {
+            "pregunta": "¿Incluye IA o robots?",
+            "pelicula": null,
+            "si": {
+                "pregunta": "¿La historia trata sobre un futuro distópico?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Hay viajes en el tiempo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Interestelar",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Matrix",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Hay viajes en el tiempo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Interestelar",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Matrix",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            },
+            "no": {
+                "pregunta": "¿La historia trata sobre un futuro distópico?",
+                "pelicula": null,
+                "si": {
+                    "pregunta": "¿Hay viajes en el tiempo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Interestelar",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Matrix",
+                        "si": null,
+                        "no": null
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Hay viajes en el tiempo?",
+                    "pelicula": null,
+                    "si": {
+                        "pregunta": null,
+                        "pelicula": "Interestelar",
+                        "si": null,
+                        "no": null
+                    },
+                    "no": {
+                        "pregunta": null,
+                        "pelicula": "Matrix",
+                        "si": null,
+                        "no": null
+                    }
+                }
+            }
+        }
+    }
+}

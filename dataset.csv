@@ -1,0 +1,4 @@
+acción_q1,acción_q2,acción_q3,acción_q4,comedia_q1,comedia_q2,comedia_q3,comedia_q4,terror_q1,terror_q2,terror_q3,terror_q4,romance_q1,romance_q2,romance_q3,romance_q4,ciencia ficción_q1,ciencia ficción_q2,ciencia ficción_q3,ciencia ficción_q4,pelicula
+1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,The batman
+0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,Son como niños
+0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,Titanic
