@@ -1,0 +1,147 @@
+{
+    "pregunta": "¿Tu película es de acción?",
+    "si": {
+        "pregunta": "¿Tu película es de superhéroes?",
+        "si": {
+            "pregunta": "¿Tu película es de DC?",
+            "si": {
+                "pelicula": "Superman"
+            },
+            "no": {
+                "pregunta": "¿Tu película es de Marvel?",
+                "si": {
+                    "pelicula": "Iron Man"
+                },
+                "no": {
+                    "pregunta": "¿Tu película la protagoniza Aaron-Taylor Johnson?",
+                    "si": {
+                        "pelicula": "Kick ass"
+                    },
+                    "no": {
+                        "pregunta": "¿Tu película es de pixar?",
+                        "si": {
+                            "pelicula": "Los increibles"
+                        },
+                        "no": {
+                            "aprende": true
+                        }
+                    }
+                }
+            }
+        },
+        "no": {
+            "pregunta": "¿Tu película es de automóviles?",
+            "si": {
+                "pregunta": "¿Tu pelicula esta basada en un videojuego?",
+                "si": {
+                    "pelicula": "Need for speed"
+                },
+                "no": {
+                    "pelicula": "Rápidos y Furiosos"
+                }
+            },
+            "no": {
+                "aprende": true
+            }
+        }
+    },
+    "no": {
+        "pregunta": "¿Tu película es de comedia?",
+        "si": {
+            "pregunta": "¿Tu película es de comedia romántica?",
+            "si": {
+                "pelicula": "Anyone but You"
+            },
+            "no": {
+                "pregunta": "¿Tu película es de Adam Sandler?",
+                "si": {
+                    "pelicula": "Son como niños"
+                },
+                "no": {
+                    "pregunta": "¿Tu película tiene un protagonista mudo?",
+                    "si": {
+                        "pelicula": "Mr. Bean"
+                    },
+                    "no": {
+                        "aprende": true
+                    }
+                }
+            }
+        },
+        "no": {
+            "pregunta": "¿Tu película es de romance?",
+            "si": {
+                "pregunta": "¿Tu película ocurre en un barco?",
+                "si": {
+                    "pelicula": "Titanic"
+                },
+                "no": {
+                    "pregunta": "¿Tu película es sobre un científico?",
+                    "si": {
+                        "pelicula": "La teoría del todo"
+                    },
+                    "no": {
+                        "pregunta": "¿Tu película es un romance triste?",
+                        "si": {
+                            "pelicula": "Bajo la misma estrella"
+                        },
+                        "no": {
+                            "aprende": true
+                        }
+                    }
+                }
+            },
+            "no": {
+                "pregunta": "¿Tu película es un musical?",
+                "si": {
+                    "pregunta": "¿Tu película es sobre jazz?",
+                    "si": {
+                        "pelicula": "La La Land"
+                    },
+                    "no": {
+                        "pregunta": "¿Tu película es sobre un circo?",
+                        "si": {
+                            "pelicula": "The Greatest Showman"
+                        },
+                        "no": {
+                            "pregunta": "¿Tu película es sobre un artista?",
+                            "si": {
+                                "pelicula": "Rocketman"
+                            },
+                            "no": {
+                                "aprende": true
+                            }
+                        }
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Tu película es de ciencia ficción?",
+                    "si": {
+                        "pregunta": "¿Tu película tiene sables láser?",
+                        "si": {
+                            "pelicula": "Star Wars: A New Hope"
+                        },
+                        "no": {
+                            "pregunta": "¿Tu película tiene gusanos gigantes?",
+                            "si": {
+                                "pelicula": "Dune"
+                            },
+                            "no": {
+                                "pregunta": "¿Tu película es cyberpunk?",
+                                "si": {
+                                    "pelicula": "Akira"
+                                },
+                                "no": {
+                                    "aprende": true
+                                }
+                            }
+                        }
+                    },
+                    "no": {
+                        "aprende": true
+                    }
+                }
+            }
+        }
+    }
+}

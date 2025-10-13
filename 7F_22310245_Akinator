@@ -1,274 +1,223 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import json
 import os
+import time
 
-DB_FILE = "arbol.json"
+ARCHIVO = "arbol_peliculas.json"
 
-class Nodo:
-    def __init__(self, pregunta=None, si=None, no=None, pelicula=None):
-        self.pregunta = pregunta
-        self.si = si
-        self.no = no
-        self.pelicula = pelicula
-
-# -------------------------
-# Serialización / persistencia
-# -------------------------
-def nodo_a_dict(n):
-    if n is None:
-        return None
-    return {
-        "pregunta": n.pregunta,
-        "pelicula": n.pelicula,
-        "si": nodo_a_dict(n.si),
-        "no": nodo_a_dict(n.no)
-    }
-
-def dict_a_nodo(d):
-    if d is None:
-        return None
-    return Nodo(
-        pregunta=d.get("pregunta"),
-        pelicula=d.get("pelicula"),
-        si=dict_a_nodo(d.get("si")),
-        no=dict_a_nodo(d.get("no"))
-    )
-
-def guardar_arbol(root):
-    with open(DB_FILE, "w", encoding="utf-8") as f:
-        json.dump(nodo_a_dict(root), f, ensure_ascii=False, indent=4)
-
+# ------------------ CARGAR / CREAR ÁRBOL INICIAL ------------------
 def cargar_arbol():
-    if not os.path.exists(DB_FILE):
-        return crear_arbol_inicial()
-    with open(DB_FILE, "r", encoding="utf-8") as f:
-        data = json.load(f)
-    return dict_a_nodo(data)
+    if not os.path.exists(ARCHIVO) or os.stat(ARCHIVO).st_size == 0:
+        arbol_inicial = {
+            "pregunta": "¿Tu película es de acción?",
+            "si": {
+                "pregunta": "¿Tu película es de superhéroes?",
+                "si": {
+                    "pregunta": "¿Tu película es de DC?",
+                    "si": {"pelicula": "Superman"},
+                    "no": {
+                        "pregunta": "¿Tu película es de Marvel?",
+                        "si": {"pelicula": "Iron Man"},
+                        "no": {"aprende": True}
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Tu película es de automóviles?",
+                    "si": {"pelicula": "Rápidos y Furiosos"},
+                    "no": {"aprende": True}
+                }
+            },
+            "no": {
+                "pregunta": "¿Tu película es de comedia?",
+                "si": {
+                    "pregunta": "¿Tu película es de comedia romántica?",
+                    "si": {"pelicula": "Anyone but You"},
+                    "no": {
+                        "pregunta": "¿Tu película es de Adam Sandler?",
+                        "si": {"pelicula": "Son como niños"},
+                        "no": {
+                            "pregunta": "¿Tu película tiene un protagonista mudo?",
+                            "si": {"pelicula": "Mr. Bean"},
+                            "no": {"aprende": True}
+                        }
+                    }
+                },
+                "no": {
+                    "pregunta": "¿Tu película es de romance?",
+                    "si": {
+                        "pregunta": "¿Tu película ocurre en un barco?",
+                        "si": {"pelicula": "Titanic"},
+                        "no": {
+                            "pregunta": "¿Tu película es sobre un científico?",
+                            "si": {"pelicula": "La teoría del todo"},
+                            "no": {
+                                "pregunta": "¿Tu película es un romance triste?",
+                                "si": {"pelicula": "Bajo la misma estrella"},
+                                "no": {"aprende": True}
+                            }
+                        }
+                    },
+                    "no": {
+                        "pregunta": "¿Tu película es un musical?",
+                        "si": {
+                            "pregunta": "¿Tu película es sobre jazz?",
+                            "si": {"pelicula": "La La Land"},
+                            "no": {
+                                "pregunta": "¿Tu película es sobre un circo?",
+                                "si": {"pelicula": "The Greatest Showman"},
+                                "no": {
+                                    "pregunta": "¿Tu película es sobre un artista?",
+                                    "si": {"pelicula": "Rocketman"},
+                                    "no": {"aprende": True}
+                                }
+                            }
+                        },
+                        "no": {
+                            "pregunta": "¿Tu película es de ciencia ficción?",
+                            "si": {
+                                "pregunta": "¿Tu película tiene sables láser?",
+                                "si": {"pelicula": "Star Wars: A New Hope"},
+                                "no": {
+                                    "pregunta": "¿Tu película tiene gusanos gigantes?",
+                                    "si": {"pelicula": "Dune"},
+                                    "no": {
+                                        "pregunta": "¿Tu película es cyberpunk?",
+                                        "si": {"pelicula": "Akira"},
+                                        "no": {"aprende": True}
+                                    }
+                                }
+                            },
+                            "no": {"aprende": True}
+                        }
+                    }
+                }
+            }
+        }
+        guardar_arbol(arbol_inicial)
+        return arbol_inicial
 
-# -------------------------
-# Entrada validada sí/no
-# -------------------------
+    with open(ARCHIVO, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+# ------------------ GUARDAR ------------------
+def guardar_arbol(arbol):
+    with open(ARCHIVO, "w", encoding="utf-8") as f:
+        json.dump(arbol, f, ensure_ascii=False, indent=4)
+
+
+# ------------------ UTILIDADES ------------------
 def pedir_si_no(prompt):
-    """Pide una respuesta sí/no y valida (no acepta vacío ni respuestas desconocidas)."""
     while True:
-        r = input(prompt + " (sí/no): ").strip().lower()
-        if r in ["sí", "si", "s", "yes", "y"]:
-            return True
-        if r in ["no", "n"]:
-            return False
-        print("Respuesta no válida. Responde 'sí' o 'no'.")
+        r = input(prompt + " (si/no): ").strip().lower()
+        if r in ("si", "s"):
+            return "si"
+        if r in ("no", "n"):
+            return "no"
+        print("❗ Responde solo 'si' o 'no'.")
 
-# -------------------------
-# Subárboles por género (construcción segura)
-# -------------------------
-def crear_sub_accion():
-    # Hojas y nodos pequeños
-    leaf_superman = Nodo(pelicula="Superman")
-    leaf_batman = Nodo(pelicula="Batman")
-    node_q_superman = Nodo("¿Tu película es Superman?", si=leaf_superman, no=leaf_batman)
 
-    leaf_ironman = Nodo(pelicula="Iron Man")
-    leaf_avengers = Nodo(pelicula="Avengers: Endgame")
-    node_q_ironman = Nodo("¿Tu película es Iron Man?", si=leaf_ironman, no=leaf_avengers)
-    node_q_marvel = Nodo("¿Tu película es de Marvel?", si=node_q_ironman, no=Nodo(pelicula="Otro superhéroe"))
-
-    node_q_dc = Nodo("¿Tu película es de DC?", si=node_q_superman, no=node_q_marvel)
-
-    leaf_casino = Nodo(pelicula="Casino Royale")
-    leaf_skyfall = Nodo(pelicula="Skyfall")
-    node_q_bond = Nodo("¿Tu película es James Bond?", si=leaf_casino, no=leaf_skyfall)
-
-    node_q_martial = Nodo("¿Tu película es de artes marciales?",
-                         si=Nodo("¿Tu película es de Jackie Chan?",
-                                 si=Nodo(pelicula="Rush Hour"),
-                                 no=Nodo(pelicula="El maestro borracho")),
-                         no=Nodo(pelicula="Otra de acción"))
-
-    node_q_spy = Nodo("¿Tu película es de espías?", si=node_q_bond, no=node_q_martial)
-
-    accion_sub = Nodo("¿Tu película es de superhéroes?", si=node_q_dc, no=node_q_spy)
-    return accion_sub
-
-def crear_sub_comedia():
-    leaf_10 = Nodo(pelicula="10 cosas que odio de ti")
-    leaf_propuesta = Nodo(pelicula="La propuesta")
-    node_romcom = Nodo("¿Es una comedia romántica?",
-                       si=Nodo("¿Tu película es 10 cosas que odio de ti?", si=leaf_10, no=leaf_propuesta),
-                       no=None)
-
-    leaf_home_alone = Nodo(pelicula="Mi pobre angelito")
-    leaf_parenthood = Nodo(pelicula="Papá por siempre")
-    node_family = Nodo("¿Es una comedia familiar?",
-                       si=Nodo("¿Tu película es Mi pobre angelito?", si=leaf_home_alone, no=leaf_parenthood),
-                       no=None)
-
-    leaf_scary = Nodo(pelicula="Scary Movie")
-    leaf_superhero_movie = Nodo(pelicula="Superhero Movie")
-    node_parody = Nodo("¿Es una comedia de parodia?",
-                       si=Nodo("¿Tu película es Scary Movie?", si=leaf_scary, no=leaf_superhero_movie),
-                       no=Nodo(pelicula="Otra comedia"))
-
-    # encadenar
-    node_romcom.no = node_family
-    node_family.no = node_parody
-    return node_romcom
-
-def crear_sub_romance():
-    leaf_titanic = Nodo(pelicula="Titanic")
-    leaf_noah = Nodo(pelicula="El diario de Noah")
-    node_drama = Nodo("¿Tu película es un drama romántico?",
-                      si=Nodo("¿Tu película es Titanic?", si=leaf_titanic, no=leaf_noah),
-                      no=None)
-
-    leaf_fault = Nodo(pelicula="Bajo la misma estrella")
-    leaf_to_all = Nodo(pelicula="A todos los chicos de los que me enamoré")
-    node_young = Nodo("¿Tu película es juvenil?",
-                      si=Nodo("¿Tu película es Bajo la misma estrella?", si=leaf_fault, no=leaf_to_all),
-                      no=None)
-
-    leaf_pride = Nodo(pelicula="Orgullo y Prejuicio")
-    leaf_romeo = Nodo(pelicula="Romeo y Julieta")
-    node_hist = Nodo("¿Tu película es histórica?",
-                     si=Nodo("¿Tu película es Orgullo y Prejuicio?", si=leaf_pride, no=leaf_romeo),
-                     no=Nodo(pelicula="Otro romance"))
-
-    node_drama.no = node_young
-    node_young.no = node_hist
-    return node_drama
-
-def crear_sub_musical():
-    leaf_lionking = Nodo(pelicula="El Rey León")
-    leaf_frozen = Nodo(pelicula="Frozen")
-    node_anim = Nodo("¿Es un musical animado?",
-                    si=Nodo("¿Tu película es El Rey León?", si=leaf_lionking, no=leaf_frozen),
-                    no=None)
-
-    leaf_little = Nodo(pelicula="La Sirenita")
-    leaf_encanto = Nodo(pelicula="Encanto")
-    node_disney = Nodo("¿Tu película es de Disney?",
-                       si=Nodo("¿Tu película es La Sirenita?", si=leaf_little, no=leaf_encanto),
-                       no=None)
-
-    leaf_mis = Nodo(pelicula="Los Miserables")
-    leaf_phantom = Nodo(pelicula="El fantasma de la ópera")
-    node_broadway = Nodo("¿Tu película es de Broadway?",
-                        si=Nodo("¿Tu película es Los Miserables?", si=leaf_mis, no=leaf_phantom),
-                        no=Nodo(pelicula="Otro musical"))
-
-    node_anim.no = node_disney
-    node_disney.no = node_broadway
-    return node_anim
-
-def crear_sub_scifi():
-    node_star = Nodo("¿Tu película es Star Wars?",
-                     si=Nodo(pelicula="Star Wars: Una nueva esperanza"),
-                     no=Nodo(pelicula="Star Wars: El imperio contraataca"))
-
-    node_future = Nodo("¿Tu película es futurista?",
-                       si=Nodo("¿Tu película es Blade Runner?", si=Nodo(pelicula="Blade Runner"), no=Nodo(pelicula="Ready Player One")),
-                       no=None)
-
-    node_robots = Nodo("¿Tu película es de robots?",
-                       si=Nodo(pelicula="Terminator"),
-                       no=Nodo(pelicula="Yo, Robot"))
-
-    node_future.no = node_robots
-    node_star.no = node_future
-    return node_star
-
-def crear_arbol_inicial():
-    accion = crear_sub_accion()
-    comedia = crear_sub_comedia()
-    romance = crear_sub_romance()
-    musical = crear_sub_musical()
-    scifi = crear_sub_scifi()
-
-    # Encadenar preguntas de género en orden: acción -> comedia -> romance -> musical -> scifi
-    root = Nodo("¿Tu película es de acción?",
-                si=accion,
-                no=Nodo("¿Tu película es de comedia?",
-                        si=comedia,
-                        no=Nodo("¿Tu película es de romance?",
-                                si=romance,
-                                no=Nodo("¿Tu película es un musical?",
-                                        si=musical,
-                                        no=Nodo("¿Tu película es de ciencia ficción?",
-                                                si=scifi,
-                                                no=Nodo(pelicula="Desconocida")
-                                                )
-                                        )
-                                )
-                        )
-                )
-    return root
-
-# -------------------------
-# Juego y aprendizaje
-# -------------------------
-def hacer_pregunta(nodo):
-    """Recursiva: si hay 'pregunta' la pregunta, si no y tiene 'pelicula' es hoja."""
-    if nodo is None:
-        return aprender(Nodo())
-
-    # Si el nodo tiene texto en 'pregunta' -> decisión
-    if nodo.pregunta:
-        respuesta_si = pedir_si_no(nodo.pregunta)
-        if respuesta_si:
-            if nodo.si:
-                nodo.si = hacer_pregunta(nodo.si)
-            else:
-                nodo.si = aprender(Nodo())
-        else:
-            if nodo.no:
-                nodo.no = hacer_pregunta(nodo.no)
-            else:
-                nodo.no = aprender(Nodo())
-        return nodo
-
-    # Si no hay pregunta, tratar como hoja de película (si existe)
-    if nodo.pelicula:
-        es = pedir_si_no(f"¿Tu película es '{nodo.pelicula}'?")
-        if es:
-            print("🎬 ¡Adiviné la película!")
-            return nodo
-        else:
-            return aprender(nodo)
-
-    # Nodo vacío: aprender
-    return aprender(nodo)
-
+# ------------------ APRENDIZAJE (CAMINO 2) ------------------
 def aprender(nodo):
-    pelicula_usuario = input("No la adiviné 😅 ¿Cuál era tu película?: ").strip()
-    # cuando nodo.pelicula es None mostramos texto neutro
-    comparacion = nodo.pelicula if nodo.pelicula else "la que intenté adivinar"
-    nueva_pregunta = input(f"Dime una pregunta que distinga '{pelicula_usuario}' de {comparacion}: ").strip()
-    # validar la respuesta correcta
-    correcto_si = pedir_si_no(f"Para '{pelicula_usuario}', ¿la respuesta a esa nueva pregunta sería 'sí'?")
-    if correcto_si:
-        nuevo_nodo = Nodo(pregunta=nueva_pregunta,
-                          si=Nodo(pelicula=pelicula_usuario),
-                          no=nodo)
-    else:
-        nuevo_nodo = Nodo(pregunta=nueva_pregunta,
-                          si=nodo,
-                          no=Nodo(pelicula=pelicula_usuario))
-    print("Gracias, he aprendido algo nuevo 🤖")
-    return nuevo_nodo
+    pelicula_antigua = nodo.get("pelicula", None)
 
-# -------------------------
-# Programa principal
-# -------------------------
+    if pelicula_antigua:
+        print(f"\n🤔 Oh, no era '{pelicula_antigua}'.")
+    else:
+        print("\n🤔 Parece que no he identificado la película.")
+
+    pelicula_correcta = input("🎬 ¿Cuál era tu película? ").strip()
+    while not pelicula_correcta:
+        pelicula_correcta = input("Escribe el nombre de la película (no vacío): ").strip()
+
+    if pelicula_antigua:
+        ejemplo = f"Para diferenciar '{pelicula_correcta}' de '{pelicula_antigua}'"
+    else:
+        ejemplo = f"Para diferenciar '{pelicula_correcta}' de lo que conocía"
+    nueva_pregunta = input(f"❓ Escribe una pregunta de sí/no que {ejemplo}: ").strip()
+    while not nueva_pregunta:
+        nueva_pregunta = input("Escribe la pregunta (no vacío): ").strip()
+
+    respuesta_correcta = pedir_si_no(f"Para '{pelicula_correcta}', ¿la respuesta a esa pregunta es")
+
+    if respuesta_correcta == "si":
+        nuevo = {
+            "pregunta": nueva_pregunta,
+            "si": {"pelicula": pelicula_correcta},
+            "no": {"pelicula": pelicula_antigua} if pelicula_antigua else {"aprende": True}
+        }
+    else:
+        nuevo = {
+            "pregunta": nueva_pregunta,
+            "si": {"pelicula": pelicula_antigua} if pelicula_antigua else {"aprende": True},
+            "no": {"pelicula": pelicula_correcta}
+        }
+
+    nodo.clear()
+    nodo.update(nuevo)
+
+    guardar_arbol(arbol_global)
+    print("\n✅ Gracias — he aprendido. Actualicé el árbol.\n")
+    time.sleep(1)
+
+
+# ------------------ RECORRIDO / JUEGO ------------------
+def jugar(arbol):
+    nodo = arbol
+    camino = []
+    while True:
+        if nodo.get("aprende", False):
+            aprender(nodo)
+            return "aprendido"
+
+        if "pelicula" in nodo:
+            respuesta = pedir_si_no(f"\n🎬 ¿Tu película es '{nodo['pelicula']}'?")
+            if respuesta == "si":
+                print("🎉 ¡Adiviné!")
+                return "acierto"
+            else:
+                aprender(nodo)
+                return "aprendido"
+
+        if "reiniciar" in nodo and nodo["reiniciar"]:
+            print("\n🔁 Reiniciando el juego...\n")
+            return "reiniciar"
+
+        if "pregunta" in nodo:
+            respuesta = pedir_si_no(nodo["pregunta"])
+            camino.append((nodo["pregunta"], respuesta))
+            nodo = nodo["si"] if respuesta == "si" else nodo["no"]
+            continue
+
+        print("⚠️ Nodo inválido encontrado en el árbol. Reiniciando juego.")
+        return "error"
+
+
+# ------------------ LOOP PRINCIPAL ------------------
 def iniciar_akinator():
-    print("🎥 Bienvenido al Akinator de Películas 🎬\n")
-    arbol = cargar_arbol()
+    print("🎥 Bienvenido al Akinator de Películas (versión árbol corregido) 🎬\n")
+    global arbol_global
+    arbol_global = cargar_arbol()
 
     while True:
-        arbol = hacer_pregunta(arbol)
-        guardar_arbol(arbol)
-        print("\nDatos guardados exitosamente ✅")
-
-        if not pedir_si_no("¿Quieres volver a jugar?"):
-            print("👋 Gracias por jugar. ¡Hasta la próxima!")
+        resultado = jugar(arbol_global)
+        if resultado in ("acierto", "aprendido"):
+            volver = pedir_si_no("\n🎮 ¿Quieres jugar otra vez?")
+            if volver == "si":
+                print("\n🔁 Reiniciando...\n")
+                continue
+            else:
+                print("\n👋 ¡Gracias por jugar! Se guardó el árbol en", ARCHIVO)
+                break
+        elif resultado == "reiniciar":
+            continue
+        else:
+            print("\n⚠️ Finalizó por una razón inesperada.")
             break
 
+
+# ------------------ EJECUCIÓN ------------------
 if __name__ == "__main__":
     iniciar_akinator()
