@@ -13,7 +13,19 @@
                     "pelicula": "Iron Man"
                 },
                 "no": {
-                    "aprende": true
+                    "pregunta": "¿Tu película la protagoniza Aaron-Taylor Johnson?",
+                    "si": {
+                        "pelicula": "Kick ass"
+                    },
+                    "no": {
+                        "pregunta": "¿Tu película es de pixar?",
+                        "si": {
+                            "pelicula": "Los increibles"
+                        },
+                        "no": {
+                            "aprende": true
+                        }
+                    }
                 }
             }
         },
