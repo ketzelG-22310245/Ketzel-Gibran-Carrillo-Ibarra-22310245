@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Juego - Clue Batman</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #eee;
+            font-family: Arial;
+            text-align: center;
+            padding: 30px;
+        }
+
+        select,
+        button {
+            margin: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            background-color: #222;
+            color: #fff;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #444;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🔍 Investiga el crimen</h1>
+    <p>Selecciona quién fue el asesino, con qué arma y en qué lugar sucedió.</p>
+
+    <form method="POST" action="/resultado">
+        <label>Asesino:</label><br>
+        <select name="asesino">
+            {% for p in personajes %}
+            <option value="{{p}}">{{p}}</option>
+            {% endfor %}
+        </select><br>
+
+        <label>Arma:</label><br>
+        <select name="arma">
+            {% for a in armas %}
+            <option value="{{a}}">{{a}}</option>
+            {% endfor %}
+        </select><br>
+
+        <label>Lugar:</label><br>
+        <select name="lugar">
+            {% for l in lugares %}
+            <option value="{{l}}">{{l}}</option>
+            {% endfor %}
+        </select><br>
+
+        <button type="submit">Declarar Culpable</button>
+    </form>
+</body>
+
+</html>
