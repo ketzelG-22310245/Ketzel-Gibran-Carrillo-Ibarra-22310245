@@ -1,40 +1,123 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Créditos</title>
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-        body {
-            background-color: #111;
-            color: #eee;
-            text-align: center;
-            font-family: Arial;
-            padding: 40px;
-        }
+      /* Fondo general */
+      body {
+        background: url("{{ url_for('static', filename='Images/credits.jpg') }}")
+          no-repeat center center fixed;
+        background-size: cover;
+        color: #eee;
+        font-family: "Playfair Display", serif;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
 
-        button {
-            margin-top: 30px;
-            padding: 10px 20px;
-            background-color: #222;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-        }
+      /* Filtro oscuro */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.75);
+        z-index: -1;
+      }
 
-        button:hover {
-            background-color: #444;
-            cursor: pointer;
+      /* Contenedor principal centrado */
+      .credits-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+        animation: fadeIn 2s ease-in-out;
+      }
+
+      h1 {
+        font-family: "Cinzel", serif;
+        font-size: 48px;
+        margin-bottom: 30px;
+        text-shadow: 0 0 20px rgba(255, 64, 64, 0.5);
+      }
+
+      p {
+        font-size: 20px;
+        line-height: 1.8;
+        max-width: 700px;
+        margin: 10px auto;
+        color: #ddd;
+      }
+
+      button {
+        margin-top: 40px;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 10px;
+        background-color: rgba(30, 30, 30, 0.8);
+        color: #fff;
+        font-size: 18px;
+        font-family: "Cinzel", serif;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(255, 64, 64, 0.3);
+      }
+
+      button:hover {
+        background-color: #ff4040;
+        box-shadow: 0 0 20px rgba(255, 64, 64, 0.8);
+        transform: scale(1.05);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
         }
+        to {
+          opacity: 1;
+        }
+      }
+
+      footer {
+        position: absolute;
+        bottom: 15px;
+        width: 100%;
+        text-align: center;
+        font-size: 12px;
+        color: #aaa;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <h1>💡 Créditos</h1>
-    <p>Juego desarrollado por [Tu nombre o equipo]</p>
-    <p>Basado en “Batman: Una Muerte en la Familia”</p>
-    <p>Proyecto de simulación tipo Clue en Python + HTML</p>
-    <button onclick="window.location.href='/'">Volver al Menú</button>
-</body>
+  <body>
+    <div class="credits-container">
+      <h1>Créditos</h1>
+      <p>
+        Juego desarrollado por <strong>Ketzel Gibran Carrillo Ibarra</strong>
+      </p>
+      <p>Basado en “Batman: Una Muerte en la Familia” y otros cómics</p>
+      <p>
+        Proyecto de simulación tipo <em>Clue</em> desarrollado en Python + HTML
+      </p>
+      <button onclick="window.location.href='{{ url_for('menu') }}'">
+        Volver al Menú
+      </button>
+    </div>
 
+    <footer>© 2025 Proyecto Clue - Sistemas Expertos</footer>
+  </body>
 </html>
