@@ -25,7 +25,13 @@
                     "pelicula": "Need for speed"
                 },
                 "no": {
-                    "pelicula": "Rápidos y Furiosos"
+                    "pregunta": "¿Tu pelicula esta basado en un anime?",
+                    "si": {
+                        "pelicula": "Meteoro"
+                    },
+                    "no": {
+                        "pelicula": "Rápidos y Furiosos"
+                    }
                 }
             },
             "no": {
@@ -51,7 +57,19 @@
                         "pelicula": "Mr. Bean"
                     },
                     "no": {
-                        "aprende": true
+                        "pregunta": "¿Tu película tiene a Peter Sellers como protagonista?",
+                        "si": {
+                            "pregunta": "¿Tu película trata sobre un diamante rosa?",
+                            "si": {
+                                "pelicula": "La Pantera Rosa"
+                            },
+                            "no": {
+                                "pelicula": "DR STRANGELOVE"
+                            }
+                        },
+                        "no": {
+                            "aprende": true
+                        }
                     }
                 }
             }
@@ -126,7 +144,13 @@
                         }
                     },
                     "no": {
-                        "aprende": true
+                        "pregunta": "¿Tu película es de suspenso?",
+                        "si": {
+                            "pelicula": "Mother"
+                        },
+                        "no": {
+                            "aprende": true
+                        }
                     }
                 }
             }

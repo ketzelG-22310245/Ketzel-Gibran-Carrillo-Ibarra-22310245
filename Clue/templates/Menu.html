@@ -1,45 +1,151 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Batman: Una Muerte en la Familia</title>
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-        body {
-            background-color: #0a0a0a;
-            color: #eee;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
+      /* Fondo general */
+      body {
+        background: url("{{ url_for('static', filename='Images/background.jpg') }}")
+          no-repeat center center fixed;
+        background-size: cover;
+        color: #eee;
+        font-family: "Playfair Display", serif;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
 
-        h1 {
-            color: #ff4040;
-            margin-top: 60px;
-        }
+      /* Efecto oscuro sobre el fondo */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.75);
+        z-index: -1;
+      }
 
-        button {
-            display: block;
-            margin: 20px auto;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            background-color: #222;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
+      /* Contenedor principal */
+      .menu-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        animation: fadeIn 2s ease-in-out;
+      }
 
-        button:hover {
-            background-color: #444;
+      /* Logo centrado */
+      .logo img {
+        width: 480px;
+        max-width: 80%;
+        height: auto;
+        animation: logoFade 2.5s ease-in-out;
+        filter: drop-shadow(0 0 25px rgba(255, 64, 64, 0.4));
+      }
+
+      @keyframes logoFade {
+        0% {
+          opacity: 0;
+          transform: scale(1.2);
+          filter: brightness(0.3);
         }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+          filter: brightness(1);
+        }
+      }
+
+      /* Botones a la derecha, centrados verticalmente */
+      .menu-buttons {
+        position: absolute;
+        top: 50%;
+        right: 80px;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 20px;
+      }
+
+      button {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 10px;
+        background-color: rgba(30, 30, 30, 0.8);
+        color: #fff;
+        font-size: 18px;
+        font-family: "Cinzel", serif;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(255, 64, 64, 0.3);
+        width: 220px;
+        text-align: left;
+      }
+
+      button:hover {
+        background-color: #ff4040;
+        box-shadow: 0 0 20px rgba(255, 64, 64, 0.8);
+        transform: translateX(5px);
+      }
+
+      footer {
+        position: absolute;
+        bottom: 15px;
+        width: 100%;
+        text-align: center;
+        font-size: 12px;
+        color: #aaa;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <h1>🦇 Batman: Una Muerte en la Familia</h1>
-    <button onclick="window.location.href='/start'">🎮 Start Game</button>
-    <button onclick="window.location.href='/creditos'">💡 Créditos</button>
-    <button onclick="window.location.href='/exit'">❌ Salir</button>
-</body>
+  <body>
+    <!-- Botones centrados a la derecha -->
+    <div class="menu-buttons">
+      <button onclick="window.location.href='{{ url_for('start') }}'">
+        Iniciar Juego
+      </button>
+      <button onclick="window.location.href='{{ url_for('creditos') }}'">
+        Créditos
+      </button>
+      <button onclick="window.location.href='{{ url_for('salir') }}'">
+        Salir
+      </button>
+    </div>
 
+    <!-- Logo centrado -->
+    <div class="menu-container">
+      <div class="logo">
+        <img
+          src="{{ url_for('static', filename='Images/batman.png') }}"
+          alt="Batman: Una Muerte en la Familia"
+        />
+      </div>
+    </div>
+
+    <footer>© 2025 Proyecto Clue - Sistemas Expertos</footer>
+  </body>
 </html>
