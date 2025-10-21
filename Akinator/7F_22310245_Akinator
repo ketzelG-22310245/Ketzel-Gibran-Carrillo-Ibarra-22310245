@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from flask import Flask, render_template, request, redirect, session, url_for
 import json
 import os
 import time
 
+app = Flask(__name__)
+app.secret_key = "akinator-flask-secret-porfavorcámbialo"
 ARCHIVO = "arbol_peliculas.json"
 
-# ------------------ CARGAR / CREAR ÁRBOL INICIAL ------------------
+# ------------------ CARGAR / CREAR ÁRBOL INICIAL (TU ÁRBOL COMPLETO) ------------------
 def cargar_arbol():
     if not os.path.exists(ARCHIVO) or os.stat(ARCHIVO).st_size == 0:
         arbol_inicial = {
@@ -108,116 +111,137 @@ def guardar_arbol(arbol):
         json.dump(arbol, f, ensure_ascii=False, indent=4)
 
 
-# ------------------ UTILIDADES ------------------
-def pedir_si_no(prompt):
-    while True:
-        r = input(prompt + " (si/no): ").strip().lower()
-        if r in ("si", "s"):
-            return "si"
-        if r in ("no", "n"):
-            return "no"
-        print("❗ Responde solo 'si' o 'no'.")
+# ------------------ UTILIDAD: OBTENER NODO ACTUAL SEGÚN EL CAMINO ------------------
+def obtener_nodo_actual(arbol, camino):
+    nodo = arbol
+    for r in camino:
+        # r debe ser "si" o "no"
+        nodo = nodo.get(r, {})
+    return nodo
 
 
-# ------------------ APRENDIZAJE (CAMINO 2) ------------------
-def aprender(nodo):
+# ------------------ RUTAS FLASK ------------------
+@app.route("/")
+def index():
+    # iniciar/reiniciar la sesión de juego
+    session["camino"] = []
+    return render_template("index.html")
+
+
+@app.route("/jugar", methods=["GET"])
+def jugar():
+    arbol = cargar_arbol()
+    camino = session.get("camino", [])
+    nodo = obtener_nodo_actual(arbol, camino)
+
+    # Si nodo indica aprender (aprende: True)
+    if nodo.get("aprende", False):
+        # mostrar formulario para aprender
+        # Si el nodo no tiene 'pelicula', lo tratamos como nuevo aprendizaje
+        pelicula_antigua = nodo.get("pelicula", None)
+        return render_template("aprende.html", pelicula_antigua=pelicula_antigua)
+
+    # Si nodo propone una película candidata
+    if "pelicula" in nodo:
+        return render_template("jugar.html", pregunta=None, pelicula=nodo["pelicula"])
+
+    # Si es una pregunta
+    if "pregunta" in nodo:
+        return render_template("jugar.html", pregunta=nodo["pregunta"], pelicula=None)
+
+    # Si algo no encaja, reiniciamos sesión y mostramos mensaje de error suave
+    session["camino"] = []
+    return render_template("final.html", mensaje="Nodo inválido en el árbol. Reinicié la partida.")
+
+
+@app.route("/respuesta", methods=["POST"])
+def respuesta():
+    # recibir 'si' o 'no' desde el formulario
+    r = request.form.get("respuesta")
+    if r not in ("si", "no"):
+        # invalid input -> redirigir a jugar
+        return redirect(url_for("jugar"))
+
+    camino = session.get("camino", [])
+    camino.append(r)
+    session["camino"] = camino
+    return redirect(url_for("jugar"))
+
+
+@app.route("/adivino", methods=["POST"])
+def adivino():
+    # Cuando el sistema propone una película y el usuario responde si/no
+    correcto = request.form.get("correcto")
+    if correcto == "si":
+        # Adivinó
+        # limpiar camino para nueva partida si el usuario vuelve
+        session["camino"] = []
+        return render_template("final.html", acierto=True)
+    else:
+        # no adivinó -> ir a aprender
+        return render_template("aprende.html", pelicula_antigua=None)
+
+
+@app.route("/aprender", methods=["POST"])
+def aprender():
+    """
+    Este endpoint procesa el formulario de aprendizaje enviado desde aprende.html.
+    Mantiene la misma lógica que tu función 'aprender' de la versión consola,
+    adaptada para tomar datos del formulario y actualizar el nodo correspondiente en el árbol.
+    """
+    arbol = cargar_arbol()
+    camino = session.get("camino", [])
+    nodo = obtener_nodo_actual(arbol, camino)
+
+    # Datos del formulario
+    pelicula_correcta = request.form.get("pelicula", "").strip()
+    pregunta_nueva = request.form.get("pregunta", "").strip()
+    respuesta_correcta = request.form.get("respuesta", "").strip()  # "si" o "no"
+
+    # Validaciones básicas
+    if not pelicula_correcta or not pregunta_nueva or respuesta_correcta not in ("si", "no"):
+        # volver a la pantalla aprender con mensaje (opcional)
+        return render_template("aprende.html", error="Rellena todos los campos correctamente.", pelicula_antigua=nodo.get("pelicula"))
+
     pelicula_antigua = nodo.get("pelicula", None)
 
-    if pelicula_antigua:
-        print(f"\n🤔 Oh, no era '{pelicula_antigua}'.")
-    else:
-        print("\n🤔 Parece que no he identificado la película.")
-
-    pelicula_correcta = input("🎬 ¿Cuál era tu película? ").strip()
-    while not pelicula_correcta:
-        pelicula_correcta = input("Escribe el nombre de la película (no vacío): ").strip()
-
-    if pelicula_antigua:
-        ejemplo = f"Para diferenciar '{pelicula_correcta}' de '{pelicula_antigua}'"
-    else:
-        ejemplo = f"Para diferenciar '{pelicula_correcta}' de lo que conocía"
-    nueva_pregunta = input(f"❓ Escribe una pregunta de sí/no que {ejemplo}: ").strip()
-    while not nueva_pregunta:
-        nueva_pregunta = input("Escribe la pregunta (no vacío): ").strip()
-
-    respuesta_correcta = pedir_si_no(f"Para '{pelicula_correcta}', ¿la respuesta a esa pregunta es")
-
+    # Construcción del nuevo sub-árbol según la respuesta (igual que tu lógica consola)
     if respuesta_correcta == "si":
         nuevo = {
-            "pregunta": nueva_pregunta,
+            "pregunta": pregunta_nueva,
             "si": {"pelicula": pelicula_correcta},
             "no": {"pelicula": pelicula_antigua} if pelicula_antigua else {"aprende": True}
         }
     else:
         nuevo = {
-            "pregunta": nueva_pregunta,
+            "pregunta": pregunta_nueva,
             "si": {"pelicula": pelicula_antigua} if pelicula_antigua else {"aprende": True},
             "no": {"pelicula": pelicula_correcta}
         }
 
+    # Reemplazamos el contenido del nodo en el árbol por el nuevo sub-árbol
     nodo.clear()
     nodo.update(nuevo)
 
-    guardar_arbol(arbol_global)
-    print("\n✅ Gracias — he aprendido. Actualicé el árbol.\n")
-    time.sleep(1)
+    # Guardar árbol actualizado
+    guardar_arbol(arbol)
+
+    # limpiar camino para nueva partida
+    session["camino"] = []
+
+    # mostrar pantalla final indicando que aprendió
+    return render_template("final.html", acierto=False, pelicula=pelicula_correcta)
 
 
-# ------------------ RECORRIDO / JUEGO ------------------
-def jugar(arbol):
-    nodo = arbol
-    camino = []
-    while True:
-        if nodo.get("aprende", False):
-            aprender(nodo)
-            return "aprendido"
-
-        if "pelicula" in nodo:
-            respuesta = pedir_si_no(f"\n🎬 ¿Tu película es '{nodo['pelicula']}'?")
-            if respuesta == "si":
-                print("🎉 ¡Adiviné!")
-                return "acierto"
-            else:
-                aprender(nodo)
-                return "aprendido"
-
-        if "reiniciar" in nodo and nodo["reiniciar"]:
-            print("\n🔁 Reiniciando el juego...\n")
-            return "reiniciar"
-
-        if "pregunta" in nodo:
-            respuesta = pedir_si_no(nodo["pregunta"])
-            camino.append((nodo["pregunta"], respuesta))
-            nodo = nodo["si"] if respuesta == "si" else nodo["no"]
-            continue
-
-        print("⚠️ Nodo inválido encontrado en el árbol. Reiniciando juego.")
-        return "error"
+# Ruta opcional para reiniciar manualmente el árbol (útil en desarrollo)
+@app.route("/_reset_tree", methods=["POST"])
+def reset_tree():
+    if os.path.exists(ARCHIVO):
+        os.remove(ARCHIVO)
+    cargar_arbol()
+    session["camino"] = []
+    return redirect(url_for("index"))
 
 
-# ------------------ LOOP PRINCIPAL ------------------
-def iniciar_akinator():
-    print("🎥 Bienvenido al Akinator de Películas (versión árbol corregido) 🎬\n")
-    global arbol_global
-    arbol_global = cargar_arbol()
-
-    while True:
-        resultado = jugar(arbol_global)
-        if resultado in ("acierto", "aprendido"):
-            volver = pedir_si_no("\n🎮 ¿Quieres jugar otra vez?")
-            if volver == "si":
-                print("\n🔁 Reiniciando...\n")
-                continue
-            else:
-                print("\n👋 ¡Gracias por jugar! Se guardó el árbol en", ARCHIVO)
-                break
-        elif resultado == "reiniciar":
-            continue
-        else:
-            print("\n⚠️ Finalizó por una razón inesperada.")
-            break
-
-
-# ------------------ EJECUCIÓN ------------------
 if __name__ == "__main__":
-    iniciar_akinator()
+    app.run(debug=True)
