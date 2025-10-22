@@ -1,59 +1,112 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Resultado</title>
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+      rel="stylesheet"
+    />
+
     <style>
-        body {
-            background-color: #0a0a0a;
-            color: #eee;
-            font-family: Arial;
-            text-align: center;
-            padding: 30px;
-        }
+      body {
+        background: url("{{ url_for('static', filename='Images/background.jpg') }}")
+          no-repeat center center fixed;
+        background-size: cover;
+        font-family: "Playfair Display", serif;
+        color: #eee;
+        text-align: center;
+        padding: 60px;
+      }
 
-        .correcto {
-            color: lime;
-            font-weight: bold;
-        }
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        z-index: -1;
+      }
 
-        .incorrecto {
-            color: red;
-            font-weight: bold;
-        }
+      h1 {
+        font-family: "Cinzel", serif;
+        font-size: 42px;
+        margin-bottom: 25px;
+        text-shadow: 0 0 20px rgba(255, 64, 64, 0.6);
+      }
 
-        p {
-            max-width: 600px;
-            margin: auto;
-        }
+      .correcto {
+        color: lime;
+        text-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
+      }
 
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            border-radius: 8px;
-            background-color: #222;
-            color: #fff;
-            border: none;
-        }
+      .incorrecto {
+        color: #ff4040;
+        text-shadow: 0 0 10px rgba(255, 64, 64, 0.8);
+      }
 
-        button:hover {
-            background-color: #444;
-            cursor: pointer;
-        }
+      .historia {
+        max-width: 800px;
+        margin: 40px auto;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 25px;
+        text-align: justify;
+        line-height: 1.7;
+        box-shadow: 0 0 15px rgba(255, 64, 64, 0.2);
+      }
+
+      button {
+        margin-top: 30px;
+        padding: 14px 36px;
+        border: none;
+        border-radius: 12px;
+        background-color: rgba(30, 30, 30, 0.9);
+        color: #fff;
+        font-size: 18px;
+        font-family: "Cinzel", serif;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(255, 64, 64, 0.3);
+      }
+
+      button:hover {
+        background-color: #ff4040;
+        box-shadow: 0 0 25px rgba(255, 64, 64, 0.8);
+        transform: scale(1.05);
+      }
+
+      footer {
+        margin-top: 40px;
+        color: #aaa;
+        font-size: 13px;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     {% if correcto %}
     <h1 class="correcto">¡Correcto! 🎯</h1>
-    <p>{{historia}}</p>
+    <p>Has resuelto el caso con éxito.</p>
     {% else %}
     <h1 class="incorrecto">Incorrecto 😔</h1>
-    <p>La historia real fue:</p>
-    <p>{{historia}}</p>
+    <p>No lograste identificar correctamente todos los elementos.</p>
     {% endif %}
-    <button onclick="window.location.href='/'">Volver al menú</button>
-</body>
 
+    <div class="historia">
+      <p>{{ historia }}</p>
+    </div>
+
+    <button onclick="window.location.href='{{ url_for('menu') }}'">
+      Volver al Menú
+    </button>
+
+    <footer>© 2025 Proyecto Clue - Sistemas Expertos</footer>
+  </body>
 </html>

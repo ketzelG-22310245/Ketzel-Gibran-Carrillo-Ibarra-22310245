@@ -20,7 +20,8 @@
         font-family: "Playfair Display", serif;
         color: #eee;
         text-align: center;
-        padding: 50px;
+        padding: 60px;
+        margin: 0;
       }
 
       body::before {
@@ -34,50 +35,37 @@
         z-index: -1;
       }
 
+      .contenedor {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 15px;
+        max-width: 800px;
+        margin: auto;
+        padding: 30px;
+        box-shadow: 0 0 20px rgba(255, 64, 64, 0.3);
+        animation: fadeIn 2s ease-in-out;
+      }
+
       h1 {
         font-family: "Cinzel", serif;
-        font-size: 40px;
-        margin-bottom: 15px;
-        text-shadow: 0 0 15px rgba(255, 64, 64, 0.5);
+        font-size: 42px;
+        margin-bottom: 20px;
+        text-shadow: 0 0 15px rgba(255, 64, 64, 0.4);
       }
 
       p {
+        text-align: justify;
+        line-height: 1.7;
         font-size: 18px;
-        margin-bottom: 25px;
         color: #ddd;
       }
 
-      form {
-        background-color: rgba(255, 255, 255, 0.05);
-        display: inline-block;
-        padding: 30px 40px;
-        border-radius: 16px;
-        box-shadow: 0 0 15px rgba(255, 64, 64, 0.2);
-      }
-
-      label {
-        font-family: "Cinzel", serif;
-        font-size: 18px;
-      }
-
-      select {
-        margin: 10px;
-        padding: 10px;
-        border-radius: 8px;
-        border: none;
-        background-color: #222;
-        color: #fff;
-        font-size: 16px;
-        font-family: "Playfair Display", serif;
-      }
-
       button {
-        margin-top: 25px;
+        margin-top: 30px;
         padding: 14px 36px;
-        border: none;
-        border-radius: 12px;
         background-color: rgba(30, 30, 30, 0.9);
         color: #fff;
+        border: none;
+        border-radius: 12px;
         font-size: 18px;
         font-family: "Cinzel", serif;
         cursor: pointer;
@@ -91,6 +79,15 @@
         transform: scale(1.05);
       }
 
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
       footer {
         margin-top: 40px;
         color: #aaa;
@@ -100,42 +97,14 @@
   </head>
 
   <body>
-    <h1>{{ titulo }}</h1>
-    <p>
-      Selecciona quién fue el asesino, con qué arma y en qué lugar sucedió el
-      crimen.
-    </p>
+    <div class="contenedor">
+      <h1>{{ titulo }}</h1>
+      <p>{{ introduccion }}</p>
 
-    <form method="POST" action="/resultado">
-      <div>
-        <label>Asesino:</label><br />
-        <select name="asesino">
-          {% for p in personajes %}
-          <option value="{{p}}">{{p}}</option>
-          {% endfor %}
-        </select>
-      </div>
-
-      <div>
-        <label>Arma:</label><br />
-        <select name="arma">
-          {% for a in armas %}
-          <option value="{{a}}">{{a}}</option>
-          {% endfor %}
-        </select>
-      </div>
-
-      <div>
-        <label>Lugar:</label><br />
-        <select name="lugar">
-          {% for l in lugares %}
-          <option value="{{l}}">{{l}}</option>
-          {% endfor %}
-        </select>
-      </div>
-
-      <button type="submit">Declarar culpable ⚖️</button>
-    </form>
+      <button onclick="window.location.href='{{ url_for('lista_lugares') }}'">
+        Comenzar investigación 🔍
+      </button>
+    </div>
 
     <footer>© 2025 Proyecto Clue - Sistemas Expertos</footer>
   </body>
