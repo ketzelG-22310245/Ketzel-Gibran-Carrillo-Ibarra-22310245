@@ -5,7 +5,13 @@
         "si": {
             "pregunta": "¿Tu película es de DC?",
             "si": {
-                "pelicula": "Superman"
+                "pregunta": "¿Tu pelicula es de un superheroe que se disfraza de murcielago?",
+                "si": {
+                    "pelicula": "The Batman"
+                },
+                "no": {
+                    "pelicula": "Superman"
+                }
             },
             "no": {
                 "pregunta": "¿Tu película es de Marvel?",
