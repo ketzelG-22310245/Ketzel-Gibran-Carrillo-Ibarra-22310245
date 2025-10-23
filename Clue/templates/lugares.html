@@ -56,12 +56,12 @@
       }
 
       .subtitulo {
-    text-align: left;
-    margin-left: 40px;
-    margin-top: 10px;
-    color: #eee;
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2em;
+        text-align: left;
+        margin-left: 40px;
+        margin-top: 10px;
+        color: #eee;
+        font-family: "Playfair Display", serif;
+        font-size: 1.2em;
       }
 
       .container {
@@ -144,26 +144,25 @@
       }
 
       .declarar {
-    text-align: center;
-    margin-top: 30px;
-}
+        text-align: center;
+        margin-top: 30px;
+      }
 
-.boton {
-    background-color: #222;
-    color: #fff;
-    padding: 10px 25px;
-    border-radius: 10px;
-    font-size: 1.1em;
-    font-family: 'Cinzel', serif;
-    text-decoration: none;
-    transition: 0.3s;
-}
+      .boton {
+        background-color: #222;
+        color: #fff;
+        padding: 10px 25px;
+        border-radius: 10px;
+        font-size: 1.1em;
+        font-family: "Cinzel", serif;
+        text-decoration: none;
+        transition: 0.3s;
+      }
 
-.boton:hover {
-    background-color: #b30000;
-    color: #fff;
-}
-
+      .boton:hover {
+        background-color: #b30000;
+        color: #fff;
+      }
     </style>
   </head>
 
@@ -189,12 +188,9 @@
     <div class="imagen-preview" id="preview"></div>
 
     {% if todos_visitados %}
-<div class="declarar">
-  <a href="{{ url_for('juego') }}" class="boton">⚖️ Declarar culpable</a>
-</div>
-{% endif %}
-
-    </button>
+    <div class="declarar">
+      <a href="{{ url_for('juego') }}" class="boton">⚖️ Declarar culpable</a>
+    </div>
     {% endif %}
 
     <div class="credit">© 2025 Proyecto Clue - Sistemas Expertos</div>

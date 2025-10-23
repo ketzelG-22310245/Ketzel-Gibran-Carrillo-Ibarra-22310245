@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import random
 
 app = Flask(__name__)
+app.secret_key = "7F_22310245_ClaveSecreta_Batman_Game"  # ✅ clave antes de usar session
 
 # ====================================================
 # FUNCIONES DE CASOS
@@ -191,71 +192,105 @@ lugares_visitados = set()
 
 @app.route('/')
 def menu():
+    session.clear()
     return render_template('menu.html')
 
 @app.route('/start')
 def start():
     """Selecciona un caso aleatorio y muestra la introducción"""
-    global caso_actual, lugares_visitados
-    lugares_visitados = set()
     caso_func = random.choice(casos)
-    caso_actual = caso_func()
-    return render_template('intro.html', titulo=caso_actual["titulo"], introduccion=caso_actual["introduccion"])
+    caso = caso_func()
+
+    session['caso'] = caso
+    session['lugares_visitados'] = []
+
+    return render_template(
+        'intro.html',
+        titulo=caso["titulo"],
+        introduccion=caso["introduccion"]
+    )
 
 @app.route('/lugares')
 def lista_lugares():
     """Muestra lista de lugares para investigar"""
-    global caso_actual, lugares_visitados
-    todos_visitados = len(lugares_visitados) == len(caso_actual["lugares"])
+    caso = session.get('caso')
+    if not caso:
+        return redirect(url_for('menu'))
+
+    lugares_visitados = session.get('lugares_visitados', [])
+    todos_visitados = len(lugares_visitados) == len(caso["lugares"])
+
     return render_template(
         'lugares.html',
-        titulo=caso_actual["titulo"],
-        lugares=caso_actual["lugares"],
+        titulo=caso["titulo"],
+        lugares=caso["lugares"],
         lugares_visitados=lugares_visitados,
         todos_visitados=todos_visitados
     )
 
 @app.route('/investigar/<lugar>')
 def investigar(lugar):
-    """Muestra descripción del lugar en una nueva pestaña"""
-    global caso_actual
-    descripcion = caso_actual['lugares'].get(lugar, "No hay información disponible sobre este lugar.")
+    """Muestra descripción del lugar"""
+    caso = session.get('caso')
+    if not caso:
+        return redirect(url_for('menu'))
+
+    descripcion = caso['lugares'].get(lugar, "No hay información disponible sobre este lugar.")
     return render_template('investigar.html', lugar=lugar, descripcion=descripcion)
 
 @app.route('/marcar_visitado/<lugar>', methods=['POST'])
 def marcar_visitado(lugar):
-    """Marca un lugar como visitado (AJAX desde investigar.html)"""
-    global lugares_visitados, caso_actual
-    if lugar in caso_actual['lugares']:
-        lugares_visitados.add(lugar)
-    return '', 204  # Sin contenido, pero éxito
+    """Marca un lugar como visitado"""
+    caso = session.get('caso')
+    if not caso:
+        return '', 204
+
+    lugares_visitados = session.get('lugares_visitados', [])
+    if lugar not in lugares_visitados and lugar in caso['lugares']:
+        lugares_visitados.append(lugar)
+        session['lugares_visitados'] = lugares_visitados
+    return '', 204
 
 @app.route('/juego')
 def juego():
     """Solo accesible si ya visitó todos los lugares"""
-    global caso_actual
-    if len(lugares_visitados) < len(caso_actual["lugares"]):
+    caso = session.get('caso')
+    if not caso:
+        return redirect(url_for('menu'))
+
+    lugares_visitados = session.get('lugares_visitados', [])
+    if len(lugares_visitados) < len(caso["lugares"]):
         return redirect(url_for('lista_lugares'))
-    return render_template('juego.html',
-                           titulo=caso_actual["titulo"],
-                           personajes=caso_actual["personajes"],
-                           lugares=caso_actual["lugares"].keys(),
-                           armas=caso_actual["armas"])
+
+    return render_template(
+        'juego.html',
+        titulo=caso["titulo"],
+        personajes=caso["personajes"],
+        lugares=caso["lugares"].keys(),
+        armas=caso["armas"]
+    )
 
 @app.route('/resultado', methods=['POST'])
 def resultado():
-    global caso_actual
+    caso = session.get('caso')
+    if not caso:
+        return redirect(url_for('menu'))
+
     asesino = request.form['asesino']
     arma = request.form['arma']
     lugar = request.form['lugar']
 
     correcto = (
-        asesino == caso_actual['solucion']['asesino'] and
-        arma == caso_actual['solucion']['arma'] and
-        lugar == caso_actual['solucion']['lugar']
+        asesino == caso['solucion']['asesino'] and
+        arma == caso['solucion']['arma'] and
+        lugar == caso['solucion']['lugar']
     )
 
-    return render_template('resultado.html', correcto=correcto, historia=caso_actual['solucion']['historia'])
+    return render_template(
+        'resultado.html',
+        correcto=correcto,
+        historia=caso['solucion']['historia']
+    )
 
 @app.route('/creditos')
 def creditos():
@@ -263,7 +298,9 @@ def creditos():
 
 @app.route('/exit')
 def salir():
+    session.clear()
     return "Juego cerrado. Puedes cerrar esta pestaña."
+
 
 if __name__ == '__main__':
     app.run(debug=True)
