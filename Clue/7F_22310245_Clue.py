@@ -189,19 +189,6 @@ lugares_visitados = set()
 # RUTAS DEL JUEGO
 # ====================================================
 
-@app.route('/')
-def menu():
-    return render_template('menu.html')
-
-@app.route('/start')
-def start():
-    """Selecciona un caso aleatorio y muestra la introducción"""
-    global caso_actual, lugares_visitados
-    lugares_visitados = set()
-    caso_func = random.choice(casos)
-    caso_actual = caso_func()
-    return render_template('intro.html', titulo=caso_actual["titulo"], introduccion=caso_actual["introduccion"])
-
 @app.route('/lugares')
 def lista_lugares():
     """Muestra lista de lugares para investigar"""
@@ -210,17 +197,19 @@ def lista_lugares():
 
 @app.route('/investigar/<lugar>')
 def investigar(lugar):
-    """Muestra descripción de un lugar"""
-    global caso_actual, lugares_visitados
-    descripcion = caso_actual["lugares"][lugar]
-    lugares_visitados.add(lugar)
-    todos_visitados = len(lugares_visitados) == len(caso_actual["lugares"])
-    return render_template('lugares.html',
-                           titulo=caso_actual["titulo"],
-                           lugares=caso_actual["lugares"],
-                           descripcion=descripcion,
-                           lugar_actual=lugar,
-                           todos_visitados=todos_visitados)
+    """Muestra descripción del lugar en una nueva pestaña"""
+    global caso_actual
+    descripcion = caso_actual['lugares'].get(lugar, "No hay información disponible sobre este lugar.")
+    return render_template('investigar.html', lugar=lugar, descripcion=descripcion)
+
+@app.route('/marcar_visitado/<lugar>', methods=['POST'])
+def marcar_visitado(lugar):
+    """Marca un lugar como visitado (AJAX desde investigar.html)"""
+    global lugares_visitados, caso_actual
+    if lugar in caso_actual['lugares']:
+        lugares_visitados.add(lugar)
+    return '', 204  # Sin contenido, pero éxito
+
 
 @app.route('/juego')
 def juego():

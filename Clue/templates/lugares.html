@@ -24,7 +24,6 @@
         overflow-x: hidden;
       }
 
-      /* Capa oscura */
       body::before {
         content: "";
         position: fixed;
@@ -36,31 +35,35 @@
         z-index: -1;
       }
 
+      /* Título del caso arriba a la izquierda */
+      .titulo-caso {
+        position: fixed;
+        top: 20px;
+        left: 40px;
+        font-family: "Cinzel", serif;
+        font-size: 32px;
+        color: #ff4040;
+        text-shadow: 0 0 20px rgba(255, 64, 64, 0.7);
+        z-index: 10;
+      }
+
       h1 {
         text-align: center;
         font-family: "Cinzel", serif;
-        font-size: 38px;
+        font-size: 36px;
+        margin-bottom: 20px;
         text-shadow: 0 0 15px rgba(255, 64, 64, 0.4);
-        margin-bottom: 10px;
       }
 
-      p {
-        text-align: center;
-        font-size: 18px;
-        color: #ddd;
-        margin-bottom: 40px;
-      }
-
-      /* Layout principal */
       .container {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
         gap: 40px;
-        padding: 0 60px;
+        padding: 60px 80px;
       }
 
-      /* Lista vertical de botones */
+      /* Lista vertical */
       .lista-lugares {
         display: flex;
         flex-direction: column;
@@ -84,47 +87,35 @@
 
       .lista-lugares button:hover {
         background-color: #ff4040;
-        box-shadow: 0 0 20px rgba(255, 64, 64, 0.8);
+        box-shadow: 0 0 25px rgba(255, 64, 64, 0.8);
         transform: translateX(8px);
       }
 
-      /* Imagen flotante (preview) */
+      /* Imagen flotante más grande */
       .imagen-preview {
         position: fixed;
-        top: 40px;
+        top: 60px;
         right: 60px;
-        width: 320px;
-        height: 200px;
-        border-radius: 16px;
+        width: 400px;
+        height: 250px;
+        border-radius: 18px;
         background-size: cover;
         background-position: center;
-        box-shadow: 0 0 25px rgba(255, 64, 64, 0.6);
+        box-shadow: 0 0 30px rgba(255, 64, 64, 0.7);
         display: none;
         z-index: 100;
       }
 
-      /* Descripción */
-      .descripcion {
-        flex: 1;
-        background-color: rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        padding: 25px;
-        font-size: 17px;
-        line-height: 1.6;
-        color: #ddd;
-        box-shadow: 0 0 15px rgba(255, 64, 64, 0.1);
+      .credit {
+        text-align: center;
+        margin-top: 60px;
+        color: #888;
+        font-size: 13px;
       }
 
-      .descripcion h3 {
-        font-family: "Cinzel", serif;
-        color: #ff4040;
-        margin-bottom: 10px;
-      }
-
-      /* Botón continuar */
       .continuar {
         display: block;
-        margin: 50px auto 0;
+        margin: 40px auto 0;
         padding: 14px 40px;
         border: none;
         border-radius: 12px;
@@ -142,43 +133,28 @@
         box-shadow: 0 0 25px rgba(255, 64, 64, 0.8);
         transform: scale(1.05);
       }
-
-      footer {
-        text-align: center;
-        margin-top: 40px;
-        color: #aaa;
-        font-size: 13px;
-      }
     </style>
   </head>
 
   <body>
-    <h1>{{ titulo }}</h1>
-    <p>Selecciona un lugar para investigar las pistas:</p>
+    <!-- Título fijo del caso -->
+    <div class="titulo-caso">{{ titulo }}</div>
+
+    <h1>Selecciona un lugar para investigar 🔍</h1>
 
     <div class="container">
-      <!-- Lista de lugares -->
       <div class="lista-lugares">
         {% for nombre in lugares.keys() %}
         <button
           data-imagen="{{ url_for('static', filename='Images/' + nombre|replace(' ', '_')|lower + '.jpg') }}"
-          onclick="window.location.href='{{ url_for('investigar', lugar=nombre) }}'"
+          onclick="window.open('{{ url_for('investigar', lugar=nombre) }}', '_blank')"
         >
           {{ nombre }}
         </button>
         {% endfor %}
       </div>
-
-      <!-- Descripción -->
-      {% if descripcion %}
-      <div class="descripcion">
-        <h3>🔍 {{ lugar_actual }}</h3>
-        <p>{{ descripcion }}</p>
-      </div>
-      {% endif %}
     </div>
 
-    <!-- Imagen flotante -->
     <div class="imagen-preview" id="preview"></div>
 
     {% if todos_visitados %}
@@ -190,7 +166,7 @@
     </button>
     {% endif %}
 
-    <footer>© 2025 Proyecto Clue - Sistemas Expertos</footer>
+    <div class="credit">© 2025 Proyecto Clue - Sistemas Expertos</div>
 
     <script>
       const botones = document.querySelectorAll(".lista-lugares button");

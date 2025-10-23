@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{ lugar }}</title>
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background: url("{{ url_for('static', filename='Images/' + lugar|replace(' ', '_')|lower + '.jpg') }}")
+          no-repeat center center fixed;
+        background-size: cover;
+        font-family: "Playfair Display", serif;
+        color: #eee;
+        margin: 0;
+        padding: 60px;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: -1;
+      }
+
+      h1 {
+        font-family: "Cinzel", serif;
+        font-size: 38px;
+        color: #ff4040;
+        text-shadow: 0 0 15px rgba(255, 64, 64, 0.6);
+      }
+
+      .descripcion {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        padding: 25px;
+        max-width: 800px;
+        margin: 40px auto;
+        font-size: 18px;
+        text-align: justify;
+        box-shadow: 0 0 20px rgba(255, 64, 64, 0.3);
+      }
+
+      button {
+        display: block;
+        margin: 40px auto;
+        padding: 14px 40px;
+        border: none;
+        border-radius: 12px;
+        background-color: rgba(30, 30, 30, 0.9);
+        color: #fff;
+        font-size: 18px;
+        font-family: "Cinzel", serif;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(255, 64, 64, 0.3);
+      }
+
+      button:hover {
+        background-color: #ff4040;
+        box-shadow: 0 0 25px rgba(255, 64, 64, 0.8);
+        transform: scale(1.05);
+      }
+
+      footer {
+        text-align: center;
+        color: #aaa;
+        font-size: 13px;
+        margin-top: 40px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>{{ lugar }}</h1>
+
+    <div class="descripcion">
+      <p>{{ descripcion }}</p>
+    </div>
+
+    <button id="btnVolver">Seguir investigando 🔍</button>
+
+    <script>
+      // Marcar el lugar como visitado antes de cerrar la pestaña
+      document.getElementById("btnVolver").addEventListener("click", () => {
+        fetch(`/marcar_visitado/{{ lugar }}`, { method: "POST" }).then(() =>
+          window.close()
+        );
+      });
+    </script>
+
+    <footer>© 2025 Proyecto Clue - Sistemas Expertos</footer>
+  </body>
+</html>
