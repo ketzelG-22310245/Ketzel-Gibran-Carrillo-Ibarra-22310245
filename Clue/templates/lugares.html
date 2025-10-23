@@ -14,7 +14,7 @@
 
     <style>
       body {
-        background: url("{{ url_for('static', filename='Images/background.jpg') }}")
+        background: url("{{ url_for('static', filename='Images/city2.jpg') }}")
           no-repeat center center fixed;
         background-size: cover;
         font-family: "Playfair Display", serif;
@@ -51,16 +51,16 @@
         text-align: center;
         font-family: "Cinzel", serif;
         font-size: 36px;
-        margin-bottom: 20px;
+        margin-bottom: 60px;
         text-shadow: 0 0 15px rgba(255, 64, 64, 0.4);
       }
 
       .subtitulo {
         text-align: left;
+        font-family: "Cinzel", serif;
         margin-left: 40px;
-        margin-top: 10px;
-        color: #eee;
-        font-family: "Playfair Display", serif;
+        margin-top: 20px;
+        color: #ffffffff;
         font-size: 1.2em;
       }
 
@@ -189,7 +189,7 @@
 
     {% if todos_visitados %}
     <div class="declarar">
-      <a href="{{ url_for('juego') }}" class="boton">⚖️ Declarar culpable</a>
+      <a href="{{ url_for('juego') }}" class="boton">Declarar culpable</a>
     </div>
     {% endif %}
 
