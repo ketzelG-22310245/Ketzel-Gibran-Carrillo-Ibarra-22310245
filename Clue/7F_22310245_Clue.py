@@ -189,11 +189,31 @@ lugares_visitados = set()
 # RUTAS DEL JUEGO
 # ====================================================
 
+@app.route('/')
+def menu():
+    return render_template('menu.html')
+
+@app.route('/start')
+def start():
+    """Selecciona un caso aleatorio y muestra la introducción"""
+    global caso_actual, lugares_visitados
+    lugares_visitados = set()
+    caso_func = random.choice(casos)
+    caso_actual = caso_func()
+    return render_template('intro.html', titulo=caso_actual["titulo"], introduccion=caso_actual["introduccion"])
+
 @app.route('/lugares')
 def lista_lugares():
     """Muestra lista de lugares para investigar"""
-    global caso_actual
-    return render_template('lugares.html', titulo=caso_actual["titulo"], lugares=caso_actual["lugares"])
+    global caso_actual, lugares_visitados
+    todos_visitados = len(lugares_visitados) == len(caso_actual["lugares"])
+    return render_template(
+        'lugares.html',
+        titulo=caso_actual["titulo"],
+        lugares=caso_actual["lugares"],
+        lugares_visitados=lugares_visitados,
+        todos_visitados=todos_visitados
+    )
 
 @app.route('/investigar/<lugar>')
 def investigar(lugar):
@@ -209,7 +229,6 @@ def marcar_visitado(lugar):
     if lugar in caso_actual['lugares']:
         lugares_visitados.add(lugar)
     return '', 204  # Sin contenido, pero éxito
-
 
 @app.route('/juego')
 def juego():

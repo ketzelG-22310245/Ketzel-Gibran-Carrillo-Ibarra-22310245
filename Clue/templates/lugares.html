@@ -55,6 +55,15 @@
         text-shadow: 0 0 15px rgba(255, 64, 64, 0.4);
       }
 
+      .subtitulo {
+    text-align: left;
+    margin-left: 40px;
+    margin-top: 10px;
+    color: #eee;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2em;
+      }
+
       .container {
         display: flex;
         justify-content: space-between;
@@ -133,6 +142,28 @@
         box-shadow: 0 0 25px rgba(255, 64, 64, 0.8);
         transform: scale(1.05);
       }
+
+      .declarar {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.boton {
+    background-color: #222;
+    color: #fff;
+    padding: 10px 25px;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-family: 'Cinzel', serif;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.boton:hover {
+    background-color: #b30000;
+    color: #fff;
+}
+
     </style>
   </head>
 
@@ -140,7 +171,7 @@
     <!-- Título fijo del caso -->
     <div class="titulo-caso">{{ titulo }}</div>
 
-    <h1>Selecciona un lugar para investigar 🔍</h1>
+    <h2 class="subtitulo">Escoge un lugar para investigar</h2>
 
     <div class="container">
       <div class="lista-lugares">
@@ -158,11 +189,11 @@
     <div class="imagen-preview" id="preview"></div>
 
     {% if todos_visitados %}
-    <button
-      class="continuar"
-      onclick="window.location.href='{{ url_for('juego') }}'"
-    >
-      Declarar culpable ⚖️
+<div class="declarar">
+  <a href="{{ url_for('juego') }}" class="boton">⚖️ Declarar culpable</a>
+</div>
+{% endif %}
+
     </button>
     {% endif %}
 
