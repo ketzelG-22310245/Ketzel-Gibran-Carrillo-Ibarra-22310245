@@ -13,14 +13,20 @@
     />
 
     <style>
+      html,
       body {
-        background: url("{{ url_for('static', filename='Images/' + lugar|replace(' ', '_')|lower + '.jpg') }}")
-          no-repeat center center fixed;
-        background-size: cover;
+        height: 100%;
+        margin: 0;
+        padding: 0;
         font-family: "Playfair Display", serif;
         color: #eee;
-        margin: 0;
-        padding: 60px;
+      }
+
+      body {
+        background: url("{{ url_for('static', filename='Images/' + (lugar|replace(' ', '_')|lower) + '.jpg') }}")
+          no-repeat center center fixed;
+        background-size: cover;
+        box-sizing: border-box;
       }
 
       body::before {
@@ -30,90 +36,115 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(0, 0, 0, 0.72);
         z-index: -1;
+      }
+
+      .contenedor {
+        max-width: 900px;
+        margin: 72px auto;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 14px;
+        padding: 28px;
+        box-shadow: 0 0 28px rgba(255, 64, 64, 0.4);
+        color: #e9e9e9;
+        animation: fadeIn 1.8s ease-in-out;
       }
 
       h1 {
         font-family: "Cinzel", serif;
-        font-size: 42px;
-        color: #ff4040;
-        text-shadow: 0 0 20px rgba(255, 64, 64, 0.6);
+        font-size: 36px;
+        color: #ff1a1a;
+        margin: 6px 0 24px 0;
+        text-shadow: 0 0 18px rgba(255, 26, 26, 0.7);
         text-align: center;
-        margin-top: 40px;
-        margin-bottom: 10px;
       }
 
-      h2.subtitulo {
-        font-family: "Cinzel", serif;
-        font-size: 12px;
-        color: #ff6b6b;
-        text-align: center;
-        margin-top: 200px;
-        margin-bottom: 50px;
-        letter-spacing: 1px;
-        text-shadow: 0 0 8px rgba(255, 64, 64, 0.4);
+      .cuadro-descripcion {
+        background: rgba(0, 0, 0, 0.45);
+        border-radius: 14px;
+        padding: 24px;
+        box-shadow: 0 0 20px rgba(255, 26, 26, 0.2);
+        margin-bottom: 28px;
       }
 
-      .descripcion {
-        font-family: "Playfair Display", serif;
-        background-color: rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        padding: 25px;
-        max-width: 800px;
-        margin: 40px auto;
+      .cuadro-descripcion p {
         font-size: 18px;
+        line-height: 1.7;
         text-align: justify;
-        box-shadow: 0 0 20px rgba(255, 64, 64, 0.3);
+        margin: 0;
+        color: #ddd;
       }
 
-      button {
+      button.boton {
         display: block;
-        margin: 40px auto;
-        padding: 14px 40px;
-        border: none;
+        width: fit-content;
+        margin: 0 auto;
+        padding: 14px 36px;
         border-radius: 12px;
         background-color: rgba(30, 30, 30, 0.9);
         color: #fff;
-        font-size: 18px;
+        border: none;
         font-family: "Cinzel", serif;
+        font-size: 18px;
         cursor: pointer;
         transition: all 0.3s ease;
         box-shadow: 0 0 10px rgba(255, 64, 64, 0.3);
       }
 
-      button:hover {
+      button.boton:hover {
         background-color: #ff4040;
         box-shadow: 0 0 25px rgba(255, 64, 64, 0.8);
         transform: scale(1.05);
       }
 
       footer {
-        text-align: center;
+        margin-top: 12px;
         color: #aaa;
         font-size: 13px;
-        margin-top: 40px;
+        text-align: center;
+      }
+
+      @media (max-width: 900px) {
+        .contenedor {
+          margin: 40px 18px;
+          padding: 20px;
+        }
+        h1 {
+          font-size: 28px;
+        }
+        button.boton {
+          padding: 12px 32px;
+          font-size: 16px;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
     </style>
   </head>
 
   <body>
-    <h1>{{ lugar }}</h1>
+    <div class="contenedor">
+      <h1>{{ lugar }}</h1>
 
-    <div class="descripcion">
-      <p>{{ descripcion }}</p>
+      <div class="cuadro-descripcion">
+        <p>{{ descripcion }}</p>
+      </div>
+
+      <button
+        onclick="window.location.href='{{ url_for('lista_lugares') }}'"
+        class="boton"
+      >
+        Volver a la lista
+      </button>
     </div>
-
-    <button id="btnVolver">Seguir investigando 🔍</button>
-
-    <script>
-      // Marcar el lugar como visitado antes de cerrar la pestaña
-      document.getElementById("btnVolver").addEventListener("click", () => {
-        fetch(`/marcar_visitado/{{ lugar }}`, { method: "POST" }).then(() =>
-          window.close()
-        );
-      });
-    </script>
 
     <footer>© 2025 Proyecto Clue - Sistemas Expertos</footer>
   </body>
