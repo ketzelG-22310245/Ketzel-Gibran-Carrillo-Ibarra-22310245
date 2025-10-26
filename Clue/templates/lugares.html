@@ -13,15 +13,23 @@
     />
 
     <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        font-family: "Playfair Display", serif;
+        color: #eee;
+      }
+
       body {
         background: url("{{ url_for('static', filename='Images/city2.jpg') }}")
           no-repeat center center fixed;
         background-size: cover;
-        font-family: "Playfair Display", serif;
-        color: #eee;
         margin: 0;
         padding: 40px;
-        overflow-x: hidden;
+        box-sizing: border-box;
       }
 
       body::before {
@@ -35,7 +43,6 @@
         z-index: -1;
       }
 
-      /* Título del caso arriba a la izquierda */
       .titulo-caso {
         position: fixed;
         top: 20px;
@@ -47,20 +54,11 @@
         z-index: 10;
       }
 
-      h1 {
-        text-align: center;
-        font-family: "Cinzel", serif;
-        font-size: 36px;
-        margin-bottom: 60px;
-        text-shadow: 0 0 15px rgba(255, 64, 64, 0.4);
-      }
-
-      .subtitulo {
-        text-align: left;
-        font-family: "Cinzel", serif;
+      h2.subtitulo {
+        margin-top: 100px;
         margin-left: 40px;
-        margin-top: 20px;
-        color: #ffffffff;
+        font-family: "Cinzel", serif;
+        color: #ffffff;
         font-size: 1.2em;
       }
 
@@ -70,14 +68,16 @@
         align-items: flex-start;
         gap: 40px;
         padding: 60px 80px;
+        height: calc(100vh - 220px);
+        box-sizing: border-box;
       }
 
-      /* Lista vertical */
       .lista-lugares {
         display: flex;
         flex-direction: column;
         gap: 16px;
         width: 25%;
+        justify-content: center;
       }
 
       .lista-lugares button {
@@ -92,6 +92,10 @@
         box-shadow: 0 0 10px rgba(255, 64, 64, 0.25);
         cursor: pointer;
         transition: all 0.3s ease;
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .lista-lugares button:hover {
@@ -100,19 +104,79 @@
         transform: translateX(8px);
       }
 
-      /* Imagen flotante más grande */
+      .lista-lugares button.visited {
+        text-decoration: line-through;
+        opacity: 0.65;
+        cursor: default;
+        transform: none;
+        box-shadow: none;
+        pointer-events: none;
+      }
+
       .imagen-preview {
         position: fixed;
-        top: 60px;
-        right: 60px;
-        width: 400px;
-        height: 250px;
+        top: 48px;
+        right: 48px;
+        width: 520px;
+        height: 320px;
         border-radius: 18px;
         background-size: cover;
         background-position: center;
-        box-shadow: 0 0 30px rgba(255, 64, 64, 0.7);
-        display: none;
+        box-shadow: 0 0 36px rgba(255, 64, 64, 0.75);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.35s ease, visibility 0.35s ease;
         z-index: 100;
+      }
+
+      .imagen-preview.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .declarar {
+        position: fixed;
+        bottom: 28px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 120;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .boton {
+        background-color: rgba(30, 30, 30, 0.95);
+        color: #fff;
+        padding: 12px 30px;
+        border-radius: 10px;
+        font-size: 1.1em;
+        font-family: "Cinzel", serif;
+        text-decoration: none;
+        box-shadow: 0 0 10px rgba(255, 64, 64, 0.3);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      .boton:hover {
+        background-color: #ff4040;
+        box-shadow: 0 0 25px rgba(255, 64, 64, 0.8);
+        transform: scale(1.05);
+      }
+
+      .fade-in {
+        animation: fadeInUp 450ms ease forwards;
+      }
+
+      @keyframes fadeInUp {
+        0% {
+          transform: translateX(-50%) translateY(18px);
+          opacity: 0;
+          pointer-events: none;
+        }
+        100% {
+          transform: translateX(-50%) translateY(0);
+          opacity: 1;
+          pointer-events: auto;
+        }
       }
 
       .credit {
@@ -122,62 +186,48 @@
         font-size: 13px;
       }
 
-      .continuar {
-        display: block;
-        margin: 40px auto 0;
-        padding: 14px 40px;
-        border: none;
-        border-radius: 12px;
-        background-color: rgba(30, 30, 30, 0.9);
-        color: #fff;
-        font-size: 20px;
-        font-family: "Cinzel", serif;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 0 10px rgba(255, 64, 64, 0.3);
-      }
-
-      .continuar:hover {
-        background-color: #ff4040;
-        box-shadow: 0 0 25px rgba(255, 64, 64, 0.8);
-        transform: scale(1.05);
-      }
-
-      .declarar {
-        text-align: center;
-        margin-top: 30px;
-      }
-
-      .boton {
-        background-color: #222;
-        color: #fff;
-        padding: 10px 25px;
-        border-radius: 10px;
-        font-size: 1.1em;
-        font-family: "Cinzel", serif;
-        text-decoration: none;
-        transition: 0.3s;
-      }
-
-      .boton:hover {
-        background-color: #b30000;
-        color: #fff;
+      @media (max-height: 700px) {
+        .container {
+          padding: 40px 40px;
+          height: calc(100vh - 160px);
+        }
+        .imagen-preview {
+          width: 420px;
+          height: 260px;
+          right: 30px;
+          top: 70px;
+        }
+        .titulo-caso {
+          font-size: 24px;
+          left: 24px;
+          top: 12px;
+        }
       }
     </style>
   </head>
 
   <body>
-    <!-- Título fijo del caso -->
     <div class="titulo-caso">{{ titulo }}</div>
 
     <h2 class="subtitulo">Escoge un lugar para investigar</h2>
 
-    <div class="container">
+    <div class="container" data-total="{{ lugares|length }}">
       <div class="lista-lugares">
         {% for nombre in lugares.keys() %}
         <button
+          id="btn-{{ loop.index0 }}"
+          data-nombre="{{ nombre }}"
           data-imagen="{{ url_for('static', filename='Images/' + nombre|replace(' ', '_')|lower + '.jpg') }}"
-          onclick="window.open('{{ url_for('investigar', lugar=nombre) }}', '_blank')"
+          class="{% if nombre in lugares_visitados %}visited{% endif %}"
+          {%
+          if
+          nombre
+          in
+          lugares_visitados
+          %}disabled{%
+          endif
+          %}
+          onclick="handleLugarClick(event, '{{ nombre }}', {{ loop.index0 }})"
         >
           {{ nombre }}
         </button>
@@ -188,7 +238,11 @@
     <div class="imagen-preview" id="preview"></div>
 
     {% if todos_visitados %}
-    <div class="declarar">
+    <div
+      class="declarar fade-in"
+      id="declarar-servidor"
+      style="opacity: 1; pointer-events: auto"
+    >
       <a href="{{ url_for('juego') }}" class="boton">Declarar culpable</a>
     </div>
     {% endif %}
@@ -198,17 +252,93 @@
     <script>
       const botones = document.querySelectorAll(".lista-lugares button");
       const preview = document.getElementById("preview");
+      const totalLugares = botones.length;
+
+      let timeout;
 
       botones.forEach((btn) => {
         btn.addEventListener("mouseenter", () => {
+          if (btn.classList.contains("visited")) return;
+          clearTimeout(timeout);
           const img = btn.getAttribute("data-imagen");
           preview.style.backgroundImage = `url('${img}')`;
-          preview.style.display = "block";
+          preview.classList.add("visible");
         });
+
         btn.addEventListener("mouseleave", () => {
-          preview.style.display = "none";
+          timeout = setTimeout(() => preview.classList.remove("visible"), 200);
         });
       });
+
+      preview.addEventListener("mouseenter", () => clearTimeout(timeout));
+      preview.addEventListener("mouseleave", () => {
+        timeout = setTimeout(() => preview.classList.remove("visible"), 200);
+      });
+
+      function contarVisitados() {
+        return document.querySelectorAll(".lista-lugares button.visited")
+          .length;
+      }
+
+      function mostrarBotonDeclarar() {
+        const serverBtn = document.getElementById("declarar-servidor");
+        if (serverBtn) {
+          serverBtn.classList.add("fade-in");
+          serverBtn.style.opacity = "1";
+          serverBtn.style.pointerEvents = "auto";
+          return;
+        }
+
+        if (document.getElementById("declarar-cliente")) return;
+
+        const div = document.createElement("div");
+        div.className = "declarar fade-in";
+        div.id = "declarar-cliente";
+        div.innerHTML = `<a href="/juego" class="boton">Declarar culpable</a>`;
+        document.body.appendChild(div);
+      }
+
+      function asegurarBotonDeclarar() {
+        if (contarVisitados() >= totalLugares && totalLugares > 0) {
+          mostrarBotonDeclarar();
+        }
+      }
+
+      asegurarBotonDeclarar();
+
+      function handleLugarClick(evt, nombre, index) {
+        const btn = document.getElementById(`btn-${index}`);
+
+        if (btn.classList.contains("visited") || btn.disabled) {
+          window.location.href = `/investigar/${encodeURIComponent(nombre)}`;
+          return;
+        }
+
+        fetch(`/marcar_visitado/${encodeURIComponent(nombre)}`, {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "X-Requested-With": "XMLHttpRequest" },
+        })
+          .then(() => {
+            btn.classList.add("visited");
+            btn.disabled = true;
+            preview.classList.remove("visible");
+            asegurarBotonDeclarar();
+          })
+          .catch((err) => {
+            console.warn("Error marcando visitado:", err);
+            btn.classList.add("visited");
+            btn.disabled = true;
+            asegurarBotonDeclarar();
+          })
+          .finally(() => {
+            setTimeout(() => {
+              window.location.href = `/investigar/${encodeURIComponent(
+                nombre
+              )}`;
+            }, 160);
+          });
+      }
     </script>
   </body>
 </html>
