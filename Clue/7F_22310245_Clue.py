@@ -149,7 +149,7 @@ def caso5():
     """Caso 5 – Muerte de Jim Gordon"""
     historia_inicial = (
         "Batman encuentra el cuerpo de Jim Gordon colgado en la baticueva. Tiene heridas en el cuello y golpes en todo el cuerpo."
-        "Inspecciona el cuerpo de Jim Gordon y noto que habia pedazos de un paraguas en la camisa toda ensangrentada de Gordon." 
+        "Inspecciona a Jim Gordon y noto que habia pedazos de un paraguas en la camisa toda ensangrentada." 
         "Sospechando quien es el asesino procede a investigar Gotham."
     )
 
