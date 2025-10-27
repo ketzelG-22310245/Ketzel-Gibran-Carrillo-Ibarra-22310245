@@ -13,28 +13,18 @@
     />
 
     <style>
-      html, body {
+      html,
+      body {
         height: 100%;
         margin: 0;
         padding: 0;
         font-family: "Playfair Display", serif;
         color: #eee;
         box-sizing: border-box;
-      }
-
-      {% if session.caso %}
-      body {
-        background: url("{{ url_for('static', filename='Images/results/' ~ (session.caso.titulo|replace(' ', '_')|lower) ~ '.jpg') }}")
+        background: url("{{ url_for('static', filename='Images/results/' ~ imagen_resultado) }}")
           no-repeat center center fixed;
         background-size: cover;
       }
-      {% else %}
-      body {
-        background: url("{{ url_for('static', filename='Images/background.jpg') }}")
-          no-repeat center center fixed;
-        background-size: cover;
-      }
-      {% endif %}
 
       body::before {
         content: "";
@@ -50,10 +40,10 @@
       .contenedor {
         max-width: 920px;
         margin: 56px auto;
-        background: rgba(0,0,0,0.7);
+        background: rgba(0, 0, 0, 0.7);
         border-radius: 16px;
         padding: 36px 38px;
-        box-shadow: 0 0 25px rgba(255,64,64,0.4);
+        box-shadow: 0 0 25px rgba(255, 64, 64, 0.4);
         color: #eaeaea;
         text-align: center;
         animation: fadeIn 1.8s ease-in-out;
@@ -63,9 +53,15 @@
         font-family: "Cinzel", serif;
         font-size: 44px;
         margin: 6px 0 18px 0;
-        color: #ff1a1a;
-        letter-spacing: 1px;
-        text-shadow: 0 0 18px rgba(255,26,26,0.7), 0 4px 18px rgba(0,0,0,0.6);
+        text-shadow: 0 0 18px rgba(255, 26, 26, 0.7),
+          0 4px 18px rgba(0, 0, 0, 0.6);
+      }
+
+      .correcto {
+        color: #4caf50;
+      }
+      .incorrecto {
+        color: #ff4040;
       }
 
       .estado {
@@ -76,24 +72,28 @@
 
       .historia {
         width: 100%;
-        background-color: rgba(10,10,10,0.45);
+        background-color: rgba(10, 10, 10, 0.45);
         border-radius: 12px;
         padding: 26px 24px;
         text-align: justify;
         line-height: 1.75;
-        box-shadow: 0 6px 26px rgba(0,0,0,0.55), 0 0 18px rgba(255,26,26,0.2) inset;
-        border: 1px solid rgba(255,26,26,0.08);
+        box-shadow: 0 6px 26px rgba(0, 0, 0, 0.55),
+          0 0 18px rgba(255, 26, 26, 0.2) inset;
+        border: 1px solid rgba(255, 26, 26, 0.08);
         margin: 18px auto 36px auto;
         max-width: 860px;
         color: #ddd;
       }
 
-      .historia p { margin: 0; font-size: 17.5px; }
+      .historia p {
+        margin: 0;
+        font-size: 17.5px;
+      }
 
       button.boton {
         margin-top: 28px;
         padding: 14px 36px;
-        background-color: rgba(30,30,30,0.9);
+        background-color: rgba(30, 30, 30, 0.9);
         color: #fff;
         border: none;
         border-radius: 12px;
@@ -101,12 +101,12 @@
         font-family: "Cinzel", serif;
         cursor: pointer;
         transition: all 0.3s ease;
-        box-shadow: 0 0 10px rgba(255,64,64,0.3);
+        box-shadow: 0 0 10px rgba(255, 64, 64, 0.3);
       }
 
       button.boton:hover {
         background-color: #ff4040;
-        box-shadow: 0 0 25px rgba(255,64,64,0.8);
+        box-shadow: 0 0 25px rgba(255, 64, 64, 0.8);
         transform: scale(1.05);
       }
 
@@ -117,15 +117,30 @@
       }
 
       @media (max-width: 900px) {
-        .contenedor { margin: 28px 12px; padding: 22px; }
-        h1 { font-size: 34px; }
-        .historia { padding: 18px; font-size: 15.8px; }
-        button.boton { padding: 12px 32px; font-size: 16px; }
+        .contenedor {
+          margin: 28px 12px;
+          padding: 22px;
+        }
+        h1 {
+          font-size: 34px;
+        }
+        .historia {
+          padding: 18px;
+          font-size: 15.8px;
+        }
+        button.boton {
+          padding: 12px 32px;
+          font-size: 16px;
+        }
       }
 
       @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
       }
     </style>
   </head>
@@ -143,7 +158,7 @@
       {% endif %}
 
       <div class="historia">
-        <p>{{ historia }}</p>
+        <p>{{ caso.solucion.historia }}</p>
       </div>
 
       <button

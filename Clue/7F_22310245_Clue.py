@@ -286,10 +286,22 @@ def resultado():
         lugar == caso['solucion']['lugar']
     )
 
+    fondos_resultado = {
+        "Caso 1 - Los Robins asesinados": "resultado_robins.jpg",
+        "Caso 2 - Alfred Pennyworth": "resultado_alfred.jpg",
+        "Caso 3 - Barbara Gordon": "resultado_barbara.jpg",
+        "Caso 4 - Jason Todd": "resultado_jason.jpg",
+        "Caso 5 - Jim Gordon": "resultado_gordon.jpg"
+    }
+
+    titulo_caso = caso.get("titulo", "")
+    imagen_resultado = fondos_resultado.get(titulo_caso, "credits.jpg")
+
     return render_template(
-        'resultado.html',
+        "resultado.html",
         correcto=correcto,
-        historia=caso['solucion']['historia']
+        caso=caso,
+        imagen_resultado=imagen_resultado
     )
 
 @app.route('/creditos')
